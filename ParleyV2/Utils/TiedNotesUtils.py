@@ -1,7 +1,7 @@
 import copy
 
-from Utils.ExtractionUtils import *
-from Utils.RhythmUtils import *
+from ParleyV2.Utils.ExtractionUtils import *
+from ParleyV2.Utils.RhythmUtils import *
 
 
 class TiedNotesUtils:

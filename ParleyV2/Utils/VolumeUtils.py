@@ -1,4 +1,4 @@
-from Specifications.SoundFontClasses import *
+from ParleyV2.Specifications.SoundFontClasses import *
 
 
 class VolumeUtils:

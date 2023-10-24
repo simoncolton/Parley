@@ -1,6 +1,6 @@
-from Utils.MusicUtils import *
-from Utils.MathUtils import *
-from Artefacts.Artefacts import *
+from ParleyV2.Utils.MusicUtils import *
+from ParleyV2.Utils.MathUtils import *
+from ParleyV2.Artefacts.Artefacts import *
 import random
 import itertools
 

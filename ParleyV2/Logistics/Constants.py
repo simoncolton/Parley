@@ -1,4 +1,4 @@
-from Artefacts.Artefacts import *
+from ParleyV2.Artefacts.Artefacts import *
 class Constants:
 
     chord_types_hash = {

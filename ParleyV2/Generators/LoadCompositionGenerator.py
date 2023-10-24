@@ -1,6 +1,6 @@
 import copy
-from Utils.XMLUtils import *
-from Artefacts.Artefacts import *
+from ParleyV2.Utils.XMLUtils import *
+from ParleyV2.Artefacts.Artefacts import *
 
 
 class LoadCompositionGenerator:

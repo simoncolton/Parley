@@ -1,6 +1,6 @@
 import copy
 import random
-from Utils.MusicUtils import *
+from ParleyV2.Utils.MusicUtils import *
 
 class BarVariationExtractor:
 

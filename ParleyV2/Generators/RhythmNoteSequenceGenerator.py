@@ -1,6 +1,6 @@
 import copy
-from Utils.RhythmUtils import *
-from Utils.TimingUtils import *
+from ParleyV2.Utils.RhythmUtils import *
+from ParleyV2.Utils.TimingUtils import *
 
 
 class RhythmNoteSequenceGenerator:

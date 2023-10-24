@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from tqdm import tqdm
-from Utils.MusicUtils import *
+from ParleyV2.Utils.MusicUtils import *
 
 # To install tensorflow for macos
 # sudo python pip install tensorflow-macos

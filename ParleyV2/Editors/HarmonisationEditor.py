@@ -1,8 +1,8 @@
-from Artefacts.Artefacts import *
-from Utils.MusicUtils import *
-from Utils.DiscordancyUtils import *
-from Utils.ExtractionUtils import *
-from Utils.TimingUtils import *
+from ParleyV2.Artefacts.Artefacts import *
+from ParleyV2.Utils.MusicUtils import *
+from ParleyV2.Utils.DiscordancyUtils import *
+from ParleyV2.Utils.ExtractionUtils import *
+from ParleyV2.Utils.TimingUtils import *
 import copy
 import random
 

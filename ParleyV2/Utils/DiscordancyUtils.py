@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from Utils.TimingUtils import *
-from Utils.MusicUtils import *
-from Logistics.Constants import *
+from ParleyV2.Utils.TimingUtils import *
+from ParleyV2.Utils.MusicUtils import *
+from ParleyV2.Logistics.Constants import *
 
 
 @dataclass

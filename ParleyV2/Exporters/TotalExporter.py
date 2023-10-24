@@ -1,4 +1,4 @@
-from Specifications.ConstrainedSpecification import *
+from ParleyV2.Specifications.ConstrainedSpecification import *
 
 
 class TotalExporter:

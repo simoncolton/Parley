@@ -1,6 +1,6 @@
 import copy
-from Artefacts.Artefacts import *
-from Utils.TimingUtils import *
+from ParleyV2.Artefacts.Artefacts import *
+from ParleyV2.Utils.TimingUtils import *
 
 class BasicFormDesigner:
 

@@ -3,13 +3,13 @@
 import copy
 import random
 import time
-from Specifications.ConstrainedSpecification import *
-from Specifications.SoundFontClasses import *
-from Utils.MusicUtils import *
-from Analysers.DiscordancyAnalyser import *
-from Logistics.Constants import *
+from ParleyV2.Specifications.ConstrainedSpecification import *
+from ParleyV2.Specifications.SoundFontClasses import *
+from ParleyV2.Utils.MusicUtils import *
+from ParleyV2.Analysers.DiscordancyAnalyser import *
+from ParleyV2.Logistics.Constants import *
 import warnings
-from Utils.PatternUtils import *
+from ParleyV2.Utils.PatternUtils import *
 
 
 class Etude:

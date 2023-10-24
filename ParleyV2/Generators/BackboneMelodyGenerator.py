@@ -1,6 +1,6 @@
 import copy
-from Utils.TimingUtils import *
-from Utils.VolumeUtils import *
+from ParleyV2.Utils.TimingUtils import *
+from ParleyV2.Utils.VolumeUtils import *
 
 
 class BackboneMelodyGenerator:

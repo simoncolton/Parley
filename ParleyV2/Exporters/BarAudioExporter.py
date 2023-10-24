@@ -1,5 +1,5 @@
-from Exporters.AudioExporter import *
-from Specifications.ConstrainedSpecification import *
+from ParleyV2.Exporters.AudioExporter import *
+from ParleyV2.Specifications.ConstrainedSpecification import *
 from tqdm import tqdm
 
 class BarAudioExporter:

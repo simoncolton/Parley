@@ -1,7 +1,7 @@
-from Utils.NROUtils import *
-from Utils.TimingUtils import *
-from Artefacts.Artefacts import *
-from Utils.MusicUtils import *
+from ParleyV2.Utils.NROUtils import *
+from ParleyV2.Utils.TimingUtils import *
+from ParleyV2.Artefacts.Artefacts import *
+from ParleyV2.Utils.MusicUtils import *
 import copy
 
 

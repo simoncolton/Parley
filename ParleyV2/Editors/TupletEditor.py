@@ -1,6 +1,6 @@
 import copy
-from Utils.ExtractionUtils import *
-from Utils.MarginUtils import *
+from ParleyV2.Utils.ExtractionUtils import *
+from ParleyV2.Utils.MarginUtils import *
 
 
 class TupletEditor:

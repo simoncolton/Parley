@@ -1,5 +1,5 @@
 import copy
-from Utils.ExtractionUtils import *
+from ParleyV2.Utils.ExtractionUtils import *
 
 
 class AwkwardRhythmEditor:

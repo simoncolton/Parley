@@ -1,8 +1,8 @@
 import copy
-from Utils.ExtractionUtils import *
-from Utils.ListeningUtils import *
-from Utils.MusicUtils import *
-from Utils.DiscordancyUtils import *
+from ParleyV2.Utils.ExtractionUtils import *
+from ParleyV2.Utils.ListeningUtils import *
+from ParleyV2.Utils.MusicUtils import *
+from ParleyV2.Utils.DiscordancyUtils import *
 import tensorflow as tf
 import numpy as np
 from tqdm import tqdm

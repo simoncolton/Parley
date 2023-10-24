@@ -1,9 +1,9 @@
 import copy
 
-from Utils.XMLUtils import *
-from Utils.RhythmUtils import *
-from Utils.DateUtils import *
-from Utils.ExtractionUtils import *
+from ParleyV2.Utils.XMLUtils import *
+from ParleyV2.Utils.RhythmUtils import *
+from ParleyV2.Utils.DateUtils import *
+from ParleyV2.Utils.ExtractionUtils import *
 import os
 
 

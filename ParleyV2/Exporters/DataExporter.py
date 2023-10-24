@@ -1,7 +1,7 @@
 import dataclasses
 from dataclasses import asdict
-from Utils.XMLUtils import *
-from Artefacts.Artefacts import *
+from ParleyV2.Utils.XMLUtils import *
+from ParleyV2.Artefacts.Artefacts import *
 
 
 class DataExporter:

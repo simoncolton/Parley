@@ -3,7 +3,7 @@ from pdfminer.converter import PDFResourceManager, PDFPageAggregator
 from pdfminer.pdfpage import PDFPage
 from pdfminer.layout import LTLine
 from pdfminer.pdfinterp import PDFPageInterpreter
-from Utils.MathUtils import *
+from ParleyV2.Utils.MathUtils import *
 
 class OnScoreBox:
 

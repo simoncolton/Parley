@@ -1,7 +1,7 @@
 import copy
-from Utils.VolumeUtils import *
-from Utils.TimingUtils import *
-from Utils.MusicUtils import *
+from ParleyV2.Utils.VolumeUtils import *
+from ParleyV2.Utils.TimingUtils import *
+from ParleyV2.Utils.MusicUtils import *
 
 
 class PassingNotesGenerator:

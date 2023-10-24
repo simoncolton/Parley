@@ -1,9 +1,9 @@
 import copy
 
 from mido import MidiFile, MidiTrack, Message
-from Utils.MidiUtils import *
-from Utils.TimingUtils import *
-from Utils.VolumeUtils import *
+from ParleyV2.Utils.MidiUtils import *
+from ParleyV2.Utils.TimingUtils import *
+from ParleyV2.Utils.VolumeUtils import *
 
 
 class AudioExporter:

@@ -1,8 +1,8 @@
 from PIL import ImageDraw, Image, ImageFont
 from pdf2image import convert_from_path
-from Utils.PDFUtils import *
-from Utils.VideoUtils import *
-from Utils.MarginUtils import *
+from ParleyV2.Utils.PDFUtils import *
+from ParleyV2.Utils.VideoUtils import *
+from ParleyV2.Utils.MarginUtils import *
 import os
 from tqdm import tqdm
 

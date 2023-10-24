@@ -1,7 +1,7 @@
 import random, math
-from Artefacts.Artefacts import *
-from Utils.MathUtils import *
-from Utils.ExtractionUtils import *
+from ParleyV2.Artefacts.Artefacts import *
+from ParleyV2.Utils.MathUtils import *
+from ParleyV2.Utils.ExtractionUtils import *
 
 
 class TimingUtils:

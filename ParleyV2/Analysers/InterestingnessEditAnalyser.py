@@ -1,6 +1,6 @@
 import copy
-from Utils.MusicUtils import *
-from Utils.MarginUtils import *
+from ParleyV2.Utils.MusicUtils import *
+from ParleyV2.Utils.MarginUtils import *
 
 
 class InterestingnessEditAnalyser:

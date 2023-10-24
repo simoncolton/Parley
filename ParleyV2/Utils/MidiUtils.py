@@ -1,6 +1,6 @@
 import os
 from mido import MidiFile, MidiTrack, Message
-from Utils.MathUtils import *
+from ParleyV2.Utils.MathUtils import *
 
 
 class MidiUtils:

@@ -1,10 +1,10 @@
 import copy
 import random
 import time
-from Specifications.ConstrainedSpecification import *
-from Specifications.SoundFontClasses import *
-from Utils.MusicUtils import *
-from Logistics.Constants import *
+from ParleyV2.Specifications.ConstrainedSpecification import *
+from ParleyV2.Specifications.SoundFontClasses import *
+from ParleyV2.Utils.MusicUtils import *
+from ParleyV2.Logistics.Constants import *
 import warnings
 
 
@@ -90,7 +90,7 @@ class Flaneur:
         fixed_scale_param.add_constrained_value("epA_scale", "efi=A")
         fixed_scale_param.add_constrained_value("epB_scale", "efi=B")
 
-        output_stem = f"./Outputs/Flaneurs/flaneur_{random_seed}"
+        output_stem = f"/Users/Simon/Dropbox/Code/PycharmProjects/Parley/Outputs/Flaneurs/flaneur_{random_seed}"
         num_minutes = 3
 
         bar_start_duration_ms_param = Parameter("bar_start_duration_ms")

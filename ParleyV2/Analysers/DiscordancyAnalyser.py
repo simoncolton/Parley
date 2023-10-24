@@ -1,6 +1,6 @@
 import copy
-from Utils.DiscordancyUtils import *
-from Utils.MarginUtils import *
+from ParleyV2.Utils.DiscordancyUtils import *
+from ParleyV2.Utils.MarginUtils import *
 
 
 class DiscordancyAnalyser:

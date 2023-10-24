@@ -1,7 +1,6 @@
 import random
-from Utils.MusicUtils import *
-from Logistics.Constants import *
-from Artefacts.Artefacts import *
+from ParleyV2.Logistics.Constants import *
+from ParleyV2.Artefacts.Artefacts import *
 
 
 class MusicUtils:
