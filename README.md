@@ -1,7 +1,7 @@
 ## Parley
 
 ### Installation
-Hello Louis!
+
 Parley requires the following non-Python dependencies:
 
 ```
