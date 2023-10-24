@@ -177,7 +177,6 @@ class Flaneur:
             Parameter("show_chord_name", True),
             Parameter("show_episode_duration", True),
             Parameter("show_colours", True),
-            Parameter("musescore_command_line", "/Applications/MuseScore\ 3.app/Contents/MacOS/mscore"),
             Parameter("soundfont_filepath", soundfont_filepath),
             Parameter("audio_formats", ["WAV", "MP3"]),
             Parameter("dpi", 100),

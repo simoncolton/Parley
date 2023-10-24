@@ -46,7 +46,7 @@ class ScoreExporter:
         f = open(musicxml_filepath, "w")
         f.write(doc_string)
         f.close()
-        musescore_command_line = self.export_spec.get_value("musescore_command_line")
+        musescore_command_line = "mscore3"
         os.system(f"{musescore_command_line} {musicxml_filepath} -o {pdf_filepath} &> /dev/null")
         return composition
 
