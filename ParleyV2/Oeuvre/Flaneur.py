@@ -549,9 +549,12 @@ class Flaneur:
         composition_generation_spec = ParameterisedSpecification(composition_params)
         return composition_generation_spec
 
-start_time = time.time()
-nf = Flaneur("/Users/Simon/Dropbox/Code/PycharmProjects/Parley/Outputs/Flaneurs")
-composition_spec = nf.get_composition_gen_spec()
-composition = composition_spec.apply()
-stop_time = time.time()
-print("Duration: ", stop_time - start_time)
+def make_flaneur(output_dir):
+	start_time = time.time()
+	nf = Flaneur(output_dir)
+	composition_spec = nf.get_composition_gen_spec()
+	composition = composition_spec.apply()
+	stop_time = time.time()
+	print("Duration: ", stop_time - start_time)
+
+#make_flaneur("/Users/Simon/Dropbox/Code/PycharmProjects/Parley/Outputs/Flaneurs")
