@@ -15,7 +15,7 @@ class Flaneur:
     def get_composition_gen_spec(self):
 
         random_seed = random.randint(0, 100000)
-        #random_seed = 62738
+        #random_seed = 42
 
         print("Random seed:", random_seed)
 
@@ -281,8 +281,8 @@ class Flaneur:
         vl_melody_passing_notes_param.add_constrained_random_value("none", "efi=B", 50)
 
         vl_melody_in_bar_repetition_param = Parameter("in_bar_repetition")
-        vl_melody_in_bar_repetition_param.add_constrained_random_value(True, None, 20)
-        vl_melody_in_bar_repetition_param.add_constrained_random_value(False, None, 80)
+        vl_melody_in_bar_repetition_param.add_constrained_random_value(True, None, 0)
+        vl_melody_in_bar_repetition_param.add_constrained_random_value(False, None, 100)
 
         vl_melody_over_bar_repetition_param = Parameter("over_bar_repetition")
         vl_melody_over_bar_repetition_param.add_constrained_random_value(True, None, 80)
@@ -361,6 +361,7 @@ class Flaneur:
             Parameter("seed_length", 50),
             Parameter("discordancy_avoid", discordancy_spec),
             Parameter("passover_notes", None),
+            Parameter("application_probability_pc", 50),
             fixed_scale_param,
             vl_melody_in_bar_repetition_param,
             vl_melody_over_bar_repetition_param
@@ -372,13 +373,13 @@ class Flaneur:
         bass_passover_notes_param.add_constrained_value(True, "cbn=-1")
 
         bass_interest_changes = {"output_composition_id": "bass_ie",
-                                 "track_num": 0, "focal_pitch": 43, "repetition": "allow"}
+                                 "track_num": 0, "focal_pitch": 43, "repetition": "disallow"}
         tonic_interest_changes = {"output_composition_id": "tonic_ie",
-                                  "track_num": 1, "focal_pitch": 55, "repetition": "allow"}
+                                  "track_num": 1, "focal_pitch": 55, "repetition": "disallow"}
         third_interest_changes = {"output_composition_id": "third_ie",
-                                  "track_num": 2, "focal_pitch": 55, "repetition": "allow"}
+                                  "track_num": 2, "focal_pitch": 55, "repetition": "disallow"}
         fifth_interest_changes = {"output_composition_id": "fifth_ie",
-                                  "track_num": 3, "focal_pitch": 55, "repetition": "allow"}
+                                  "track_num": 3, "focal_pitch": 55, "repetition": "disallow"}
 
         bass_interestingness_edit_spec = ParameterisedSpecification(vl_melody_interestingness_edit_params, bass_interest_changes)
         bass_interestingness_edit_spec.parameters["passover_notes"] = bass_passover_notes_param
@@ -408,8 +409,8 @@ class Flaneur:
         note_removal_editor = ParameterisedSpecification(repeat_note_removal_params)
 
         repetition_param = Parameter("repetition")
-        repetition_param.add_constrained_random_value("leave", None, 40)
-        repetition_param.add_constrained_random_value("tie", None, 60)
+        repetition_param.add_constrained_random_value("leave", None, 0)
+        repetition_param.add_constrained_random_value("tie", None, 100)
 
         repetition_editor_params = [
             Parameter("applier_class_name", "RepeatedPitchEditor"),
@@ -438,10 +439,14 @@ class Flaneur:
             Parameter("channel_num", 5),
             Parameter("track_num_to_harmonise", 4),
             Parameter("note_types", "backbone"),
-            Parameter("intervals_allowed", [-3, -5, -8, 4, 7, 9]),
+            Parameter("intervals_allowed", [9, 7, 4, 3, -3, -5, -8]),
+            #Parameter("intervals_allowed", [9]),
+            #Parameter("intervals_allowed", [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+            #Parameter("intervals_allowed", [-4, -3, -2, 2, 3, 4, 12 ]),
+            Parameter("randomise_intervals", True),
             Parameter("pitch_range_low", 60),
-            Parameter("pitch_range_high", 84),
-            Parameter("map_to_scale", True),
+            Parameter("pitch_range_high", 100),
+            Parameter("map_to_scale", False),
             Parameter("keep_ties", True),
             Parameter("discordancy_avoid", discordancy_spec),
             instrument_param,
