@@ -51,6 +51,7 @@ class Episode:
 class Bar:
     bar_num: int = None
     episode_bar_num: int = None
+    start64th: int = None
     start_tick: int = None
     end_tick: int = None
     duration_ticks: int = None
