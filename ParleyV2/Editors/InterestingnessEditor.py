@@ -28,16 +28,17 @@ class InterestingnessEditor:
         for ind, note in enumerate(episode_notes):
             bar = composition.bars_hash[note.bar_num]
             spec = self.edit_spec.instantiate_me(composition, bar, note)
-            passover_this_note = spec["passover_notes"]
-            if passover_this_note is None:
-                passover_this_note = False
-            if note.pitch is not None and not passover_this_note:
-                if note.tie_type is None or note.tie_type == "start":
-                    self.update_note_pitch(composition, episode_notes, note)
-                else:
-                    all_notes_ind = all_notes.index(note)
-                    note.pitch = all_notes[all_notes_ind - 1].pitch
-                    note.score_colour = all_notes[all_notes_ind - 1].score_colour
+            if random.uniform(0, 1) < spec["application_probability_pc"]/100:
+                passover_this_note = spec["passover_notes"]
+                if passover_this_note is None:
+                    passover_this_note = False
+                if note.pitch is not None and not passover_this_note:
+                    if note.tie_type is None or note.tie_type == "start":
+                        self.update_note_pitch(composition, episode_notes, note)
+                    else:
+                        all_notes_ind = all_notes.index(note)
+                        note.pitch = all_notes[all_notes_ind - 1].pitch
+                        note.score_colour = all_notes[all_notes_ind - 1].score_colour
 
     def update_note_pitch(self, composition, episode_notes, note):
         bar = composition.bars_hash[note.bar_num]
