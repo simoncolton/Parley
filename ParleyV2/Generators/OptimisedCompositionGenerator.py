@@ -24,7 +24,6 @@ class OptimisedCompositionGenerator:
                 continue_generation = True
                 for spec in self.gen_spec.get_value("specs_to_apply"):
                     if continue_generation:
-                        #random.seed(seed)
                         if spec.get_value("input_composition_id") is not None:
                             composition = compositions[spec.get_value("input_composition_id")]
                         else:
