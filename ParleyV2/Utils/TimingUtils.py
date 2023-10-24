@@ -18,6 +18,26 @@ class TimingUtils:
     def ms_duration(duration64ths, bar):
         return (duration64ths/64) * bar.duration_ticks
 
+    def get_directly_preceding_notes(note, diff_64ths, composition):
+        directly_preceding_notes = []
+        bar_start64th = composition.bars_hash[note.bar_num].start64th
+        for other_note in ExtractionUtils.get_notes_in_composition(composition):
+            end64th = composition.bars_hash[other_note.bar_num].start64th + other_note.timing.start64th + other_note.timing.duration64ths
+            diff = (bar_start64th + note.timing.start64th) - end64th
+            if diff >= 0 and diff <= diff_64ths:
+                directly_preceding_notes.append(other_note)
+        return directly_preceding_notes
+
+    def get_directly_following_notes(note, diff_64ths, composition):
+        directly_following_notes = []
+        bar_start64th = composition.bars_hash[note.bar_num].start64th
+        for other_note in ExtractionUtils.get_notes_in_composition(composition):
+            end64th = bar_start64th + note.timing.start64th + note.timing.duration64ths
+            diff = (composition.bars_hash[other_note.bar_num].start64th + other_note.timing.start64th) - end64th
+            if diff >= 0 and diff <= diff_64ths:
+                directly_following_notes.append(other_note)
+        return directly_following_notes
+
     def get_note_overlap_duration64ths(note1, note2):
         range1 = range(note1.timing.start64th, note1.timing.start64th + note1.timing.duration64ths)
         range2 = range(note2.timing.start64th, note2.timing.start64th + note2.timing.duration64ths)
