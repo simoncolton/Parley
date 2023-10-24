@@ -12,6 +12,9 @@ import warnings
 
 class Flaneur:
 
+    def __init__(self, output_dir):
+        self.output_dir = output_dir
+
     def get_composition_gen_spec(self):
 
         random_seed = random.randint(0, 100000)
@@ -90,7 +93,7 @@ class Flaneur:
         fixed_scale_param.add_constrained_value("epA_scale", "efi=A")
         fixed_scale_param.add_constrained_value("epB_scale", "efi=B")
 
-        output_stem = f"/Users/Simon/Dropbox/Code/PycharmProjects/Parley/Outputs/Flaneurs/flaneur_{random_seed}"
+        output_stem = f"{self.output_dir}/flaneur_{random_seed}"
         num_minutes = 3
 
         bar_start_duration_ms_param = Parameter("bar_start_duration_ms")
@@ -547,7 +550,7 @@ class Flaneur:
         return composition_generation_spec
 
 start_time = time.time()
-nf = Flaneur()
+nf = Flaneur("/Users/Simon/Dropbox/Code/PycharmProjects/Parley/Outputs/Flaneurs")
 composition_spec = nf.get_composition_gen_spec()
 composition = composition_spec.apply()
 stop_time = time.time()
