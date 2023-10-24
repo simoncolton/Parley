@@ -36,6 +36,10 @@ class BasicFormDesigner:
                 addon_tick = empty_bars[-1].end_tick + 1
         composition.num_bars = len(composition.bars)
         composition.num_episodes = len(composition.episodes_hash.keys())
+        s64 = 0
+        for bar in composition.bars:
+            bar.start64th = s64
+            s64 += bar.num_beats * 16
         return composition
 
     def get_empty_bars(self, episode_duration_ms, episode, spec, comp_bar_num, addon_tick):
@@ -56,6 +60,7 @@ class BasicFormDesigner:
             bar_duration_ticks = TimingUtils.ms_to_ticks(ms_duration)
             end_tick = start_tick + bar_duration_ticks
             bar = Bar(bar_num=cb_num, episode_bar_num=eb_num,
+                      start64th=0, # will calculate this later
                       start_tick=start_tick, end_tick=end_tick, duration_ticks=bar_duration_ticks,
                       num_beats=spec["beats_per_bar"], note_sequences=[], episode_num=episode.episode_num,
                       margin_comments=[])
