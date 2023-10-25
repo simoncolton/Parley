@@ -4,3 +4,4 @@ tqdm
 mido
 Pillow
 pdf2image
+pdfminer
