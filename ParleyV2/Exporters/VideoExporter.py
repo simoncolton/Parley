@@ -145,7 +145,7 @@ class VideoExporter:
             VideoUtils.pass_to_ffmpeg_pipe(pipe, end_image)
         VideoUtils.close_pipe(pipe)
         os.system(f"ffmpeg -hide_banner -loglevel error -i {temp_mp4_output_file_path} -itsoffset 1 -i {mp3_filepath} -c:v copy -map 0:v -map 1:a -y {mp4_output_file_path}")
-        os.system(f"rm {temp_mp4_output_file_path}")
+#        os.system(f"rm {temp_mp4_output_file_path}")
 
     def get_annotated_images(self, score_images, long_score_image, thumbnail_image, sidebar_width, bars, bar_boxes):
         font = ImageFont.truetype('Tahoma.ttf', 20)
