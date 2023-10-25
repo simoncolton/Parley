@@ -26,7 +26,7 @@ class Flaneur:
         epB_chord_allowances = "maj;aug"
 
         # soundfont_filepath = SFYamahaPiano.soundfont_filepath
-	soundfont_filepath = "soundfont.sf2"
+        soundfont_filepath = "soundfont.sf2"
         epA_instrument_num = SFYamahaPiano.piano_YamahaS6
         epB_instrument_num = SFYamahaPiano.piano_YamahaS6
 
