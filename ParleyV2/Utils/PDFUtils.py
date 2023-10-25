@@ -1,8 +1,8 @@
 from pdfminer.layout import LAParams
-from pdfminer.converter import PDFResourceManager, PDFPageAggregator
+from pdfminer.converter import PDFPageAggregator
 from pdfminer.pdfpage import PDFPage
 from pdfminer.layout import LTLine
-from pdfminer.pdfinterp import PDFPageInterpreter
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from ParleyV2.Utils.MathUtils import *
 
 class OnScoreBox:
