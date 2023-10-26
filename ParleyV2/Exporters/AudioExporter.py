@@ -98,5 +98,5 @@ class AudioExporter:
                 os.system(f"fluidsynth {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F ./temp_delme.wav &> /dev/null")
                 #os.system(f"ffmpeg -y -i ./temp_delme.wav -vn -ar 44100 -ac 2 -b:a 192k -hide_banner {mp3_filepath} &> /dev/null")
                 print("Am still trying to output mp3")
-                make_mp3("./temp_delme.wav", f"{mp3_filepath})
+                make_mp3("./temp_delme.wav", mp3_filepath))
                 os.system(f"rm ./temp_delme.wav")
