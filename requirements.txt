@@ -5,3 +5,4 @@ mido
 Pillow
 pdf2image
 pdfminer
+pydub

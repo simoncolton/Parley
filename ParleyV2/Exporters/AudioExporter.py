@@ -5,7 +5,7 @@ from mido import MidiFile, MidiTrack, Message
 from ParleyV2.Utils.MidiUtils import *
 from ParleyV2.Utils.TimingUtils import *
 from ParleyV2.Utils.VolumeUtils import *
-
+from pydub import AudioSegment
 
 class AudioExporter:
 
@@ -97,5 +97,5 @@ class AudioExporter:
             if "MP3" in audio_formats:
                 mp3_filepath = output_stem + ".mp3"
                 os.system(f"fluidsynth {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F ./temp_delme.wav &> /dev/null")
-                subprocess.run(["ffmpeg", "-y", "-i", "./temp_delme.wav", "-vn", "-ar", "44100", "-ac", "2", "-b:a", "192k", "-hide_banner", mp3_filepath], capture_output=True)
+                AudioSegment.from_wav("./temp_delme.wav").export(mp3_filepath, format="mp3")
                 os.system(f"rm ./temp_delme.wav")
