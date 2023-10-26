@@ -97,6 +97,6 @@ class AudioExporter:
             if "MP3" in audio_formats:
                 mp3_filepath = output_stem + ".mp3"
                 print("AM RUNNING SUBPROCESSES")
-                subprocess.run(f"fluidsynth {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F ./temp_delme.wav &> /dev/null")
-                subprocess.run(f"ffmpeg -y -i ./temp_delme.wav -vn -ar 44100 -ac 2 -b:a 192k -hide_banner {mp3_filepath} &> /dev/null")
-                subprocess.run(f"rm ./temp_delme.wav")
+                os.system(f"fluidsynth {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F ./temp_delme.wav &> /dev/null")
+                subprocess.run(["ffmpeg", "-y", "-i", "./temp_delme.wav", "-vn", "-ar", "44100", "-ac", "2", "-b:a", "192k", "-hide_banner", mp3_filepath, "&>", "/dev/null"])
+                os.system(f"rm ./temp_delme.wav")
