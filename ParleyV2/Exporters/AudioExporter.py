@@ -96,7 +96,7 @@ class AudioExporter:
 
             if "MP3" in audio_formats:
                 mp3_filepath = output_stem + ".mp3"
-                subprocess(["fluidsynth", soundfont_filepath, "--quiet", "--no-shell", midi_filepath, "-T", "wav", "-F", "./temp_delme.wav", "&>", "/dev/null"])
+                subprocess.run(["fluidsynth", soundfont_filepath, "--quiet", "--no-shell", midi_filepath, "-T", "wav", "-F", "./temp_delme.wav", "&>", "/dev/null"])
                 # os.system(f"fluidsynth {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F ./temp_delme.wav &> /dev/null")
                 AudioSegment.from_wav("./temp_delme.wav").export(mp3_filepath, format="mp3")
                 os.system(f"rm ./temp_delme.wav")
