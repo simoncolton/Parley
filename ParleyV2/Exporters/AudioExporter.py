@@ -1,4 +1,5 @@
 import copy
+import subprocess
 
 from mido import MidiFile, MidiTrack, Message
 from ParleyV2.Utils.MidiUtils import *
@@ -95,8 +96,7 @@ class AudioExporter:
 
             if "MP3" in audio_formats:
                 mp3_filepath = output_stem + ".mp3"
-                os.system(f"fluidsynth {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F ./temp_delme.wav &> /dev/null")
-                #os.system(f"ffmpeg -y -i ./temp_delme.wav -vn -ar 44100 -ac 2 -b:a 192k -hide_banner {mp3_filepath} &> /dev/null")
-                print("Am still trying to output mp3")
-                make_mp3("./temp_delme.wav", mp3_filepath)
-                os.system(f"rm ./temp_delme.wav")
+                print("AM RUNNING SUBPROCESSES")
+                subprocess.run(f"fluidsynth {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F ./temp_delme.wav &> /dev/null")
+                subprocess.run(f"ffmpeg -y -i ./temp_delme.wav -vn -ar 44100 -ac 2 -b:a 192k -hide_banner {mp3_filepath} &> /dev/null")
+                subprocess.run(f"rm ./temp_delme.wav")
