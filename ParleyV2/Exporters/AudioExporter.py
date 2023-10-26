@@ -97,6 +97,6 @@ class AudioExporter:
                 mp3_filepath = output_stem + ".mp3"
                 os.system(f"fluidsynth {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F ./temp_delme.wav &> /dev/null")
                 #os.system(f"ffmpeg -y -i ./temp_delme.wav -vn -ar 44100 -ac 2 -b:a 192k -hide_banner {mp3_filepath} &> /dev/null")
-                print("Am trying to output mp3")
-                os.system(f"ffmpeg -i ./temp_delme.wav {mp3_filepath} > mp3_log.txt")
+                print("Am still trying to output mp3")
+                ! ffmpeg -y -i ./temp_delme.wav -vn -ar 44100 -ac 2 -b:a 192k -hide_banner {mp3_filepath} &> /dev/null
                 os.system(f"rm ./temp_delme.wav")
