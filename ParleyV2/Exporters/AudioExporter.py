@@ -97,5 +97,5 @@ class AudioExporter:
             if "MP3" in audio_formats:
                 mp3_filepath = output_stem + ".mp3"
                 os.system(f"fluidsynth {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F ./temp_delme.wav &> /dev/null")
-                subprocess.run(["ffmpeg", "-i", "./temp_delme.wav", mp3_filepath])
+                subprocess.run(["ffmpeg", "-y", "-i", "./temp_delme.wav", "-vn", "-ar", "44100", "-ac", "2", "-b:a", "-hide_banner", mp3_filepath])
                 os.system(f"rm ./temp_delme.wav")
