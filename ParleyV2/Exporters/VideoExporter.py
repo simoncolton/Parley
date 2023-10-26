@@ -17,7 +17,6 @@ class VideoExporter:
         temp_mp4_output_file_path = output_stem + "_temp.mp4"
         mp4_output_file_path = output_stem + ".mp4"
         mp3_filepath = f"{output_stem}.mp3"
-        wav_filepath = f"{output_stem}.wav"
         fps = self.export_spec.get_value("fps")
         pipe = VideoUtils.get_ffmpeg_pipe(fps, temp_mp4_output_file_path)
         pdf_file_path = output_stem + ".pdf"
@@ -145,7 +144,7 @@ class VideoExporter:
         for fn in range(0, num_end_frames):
             VideoUtils.pass_to_ffmpeg_pipe(pipe, end_image)
         VideoUtils.close_pipe(pipe)
-        os.system(f"ffmpeg -hide_banner -loglevel error -i {temp_mp4_output_file_path} -itsoffset 1 -i {wav_filepath} -c:v copy -map 0:v -map 1:a -y {mp4_output_file_path}")
+        os.system(f"ffmpeg -hide_banner -loglevel error -i {temp_mp4_output_file_path} -itsoffset 1 -i {mp3_filepath} -c:v copy -map 0:v -map 1:a -y {mp4_output_file_path}")
 #        os.system(f"rm {temp_mp4_output_file_path}")
 
     def get_annotated_images(self, score_images, long_score_image, thumbnail_image, sidebar_width, bars, bar_boxes):
