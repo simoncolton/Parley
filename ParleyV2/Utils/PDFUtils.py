@@ -95,7 +95,7 @@ class PDFUtils:
                     line = OnScoreBox(page_ind, element.x0/w, 1 - element.y0/h, element.x1/w, 1 - element.y1/h)
                     if element.x0 == element.x1 and element.linewidth == 4.464:
                         bar_lines.append(line)
-                    elif element.x0 == element.x1 and element.linewidth == 3.25:
+                    elif element.x0 == element.x1 and element.linewidth == 4:
                         bar_lines.append(line)
                     elif element.y0 == element.y1 and element.linewidth == 2.728:
                         stave_lines.append(line)
