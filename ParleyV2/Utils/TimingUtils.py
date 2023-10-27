@@ -90,6 +90,7 @@ class TimingUtils:
         return timings
 
     def add_midi_timings(composition, performance_spec):
+        print("AM USING NEW")
         track_nums = ExtractionUtils.get_track_nums(composition)
         for bar in composition.bars:
             for note_sequence in bar.note_sequences:
@@ -133,19 +134,20 @@ class TimingUtils:
                 spec = performance_spec.instantiate_me(composition, bar=bar, note=note)
                 if note.pitch is not None and note.midi_timing.duration_ticks > 0:
                     if spec["sustain_pedal_beats"] is not None:
-                        extra = int(round((64 - note.timing.start64th - note.timing.duration64ths)/64 * bar.duration_ticks))
+                        extra = int(round(((spec["sustain_pedal_beats"] * 16) - note.timing.start64th - note.timing.duration64ths)/64 * bar.duration_ticks))
                         note.midi_timing.duration_ticks += extra
                         note.midi_timing.off_tick += extra
                     if spec["sustain_factor"] is not None:
-                        extra = int(round(note.midi_timing.duration_ticks * (spec["sustain_factor"] - 1)))
-                        note.midi_timing.duration_ticks += extra
-                        note.midi_timing.off_tick += extra
+                        extra = int(round(note.midi_timing.duration_ticks * (spec["sustain_factor"])))
+                        if extra < 0:
+                          note.cutoff_prop = 1 + spec["sustain_factor"]
+                        else:
+                          note.midi_timing.duration_ticks += extra
+                          note.midi_timing.off_tick += extra
                     if spec["end_sustain_pedal_beats"] is not None:
                         last_bar = composition.bars[-1]
                         composition_end_tick = last_bar.end_tick + int((last_bar.duration_ticks/4) * spec["end_sustain_pedal_beats"])
                         note.midi_timing.off_tick = min(note.midi_timing.off_tick, composition_end_tick)
                         if note == notes[-1]:
                             note.midi_timing.off_tick = composition_end_tick
-
-
 
