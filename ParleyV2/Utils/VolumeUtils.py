@@ -45,7 +45,6 @@ class VolumeUtils:
 
     def adjust_volume_for_bad_soundfont(note, note_sequence, soundfont_filepath, msg_type):
         if "DoreMarkYamahaS6-v1.6.sf2" in soundfont_filepath:
-            print("AM FIXING")
             if note.pitch == 58:
                 return int(round(note.volume * 0.8))
         return note.volume
