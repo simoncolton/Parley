@@ -44,7 +44,8 @@ class VolumeUtils:
                         bar_duration += note.num_fracs/128
 
     def adjust_volume_for_bad_soundfont(note, note_sequence, soundfont_filepath, msg_type):
-        if soundfont_filepath == SFYamahaPiano.soundfont_filepath:
+        if "DoreMarkYamahaS6-v1.6.sf2" in soundfont_filepath:
+            print("AM FIXING")
             if note.pitch == 58:
                 return int(round(note.volume * 0.8))
         return note.volume
