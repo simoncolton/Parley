@@ -6,6 +6,7 @@ from ParleyV2.Utils.MarginUtils import *
 import os
 from tqdm import tqdm
 import subprocess
+import time
 
 class VideoExporter:
 
@@ -145,8 +146,10 @@ class VideoExporter:
         for fn in range(0, num_end_frames):
             VideoUtils.pass_to_ffmpeg_pipe(pipe, end_image)
         VideoUtils.close_pipe(pipe)
+        time.sleep(1)
         process = subprocess.Popen(f"ffmpeg -hide_banner -loglevel error -i {temp_mp4_output_file_path} -itsoffset 1 -i {mp3_filepath} -c:v copy -map 0:v -map 1:a -y {mp4_output_file_path}", shell=True)
         process.wait()
+        time.sleep(1)
         subprocess.run(f"rm {temp_mp4_output_file_path}", shell=True)
 
     def get_annotated_images(self, score_images, long_score_image, thumbnail_image, sidebar_width, bars, bar_boxes):

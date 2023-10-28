@@ -96,8 +96,8 @@ class AudioExporter:
                 process = subprocess.Popen(f"{fluidsynth_cli} {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F {wav_filepath} &> /dev/null", shell=True)
                 process.wait()
             if "MP3" in audio_formats:
+                #process doesn't seem to wait long enough for the WAV file to be written, so need to sleep
                 time.sleep(1)
-                print("HAVE WAITED")
                 mp3_filepath = output_stem + ".mp3"
                 AudioSegment.from_wav(wav_filepath).export(mp3_filepath, format="mp3")
             if "WAV" not in audio_formats:
