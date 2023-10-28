@@ -19,15 +19,15 @@ class Flaneur:
     def get_composition_gen_spec(self):
 
         random_seed = random.randint(0, 100000)
-        #random_seed = 42
+        random_seed = 76518
 
         print("Random seed:", random_seed)
 
         epA_chord_allowances = "min;dim"
         epB_chord_allowances = "maj;aug"
 
-        # soundfont_filepath = SFYamahaPiano.soundfont_filepath
-        soundfont_filepath = "/Users/Simon/Dropbox/Code/PycharmProjects/Parley/soundfonts/DoreMarkYamahaS6-v1.6.sf2"
+        soundfont_filepath = SFYamahaPiano.soundfont_filepath
+#        soundfont_filepath = "/Users/Simon/Dropbox/Code/PycharmProjects/Parley/soundfonts/DoreMarkYamahaS6-v1.6.sf2"
         epA_instrument_num = SFYamahaPiano.piano_YamahaS6
         epB_instrument_num = SFYamahaPiano.piano_YamahaS6
 

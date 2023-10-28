@@ -95,8 +95,8 @@ class AudioExporter:
                 process = subprocess.Popen(f"{fluidsynth_cli} {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F {wav_filepath} &> /dev/null", shell=True)
                 process.wait()
             if "MP3" in audio_formats:
-                process = subprocess.Popen(f"{fluidsynth_cli} {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F ./temp_delme.wav &> /dev/null", shell=True)
-                process.wait()
+                #subprocess doesn't seem to finish before returning
+                os.system(f"{fluidsynth_cli} {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F ./temp_delme.wav &> /dev/null")
                 mp3_filepath = output_stem + ".mp3"
                 AudioSegment.from_wav("./temp_delme.wav").export(mp3_filepath, format="mp3")
                 process = subprocess.Popen("rm ./temp_delme.wav", shell=True)
