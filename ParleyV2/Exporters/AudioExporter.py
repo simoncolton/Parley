@@ -68,7 +68,6 @@ class AudioExporter:
             note_volume = VolumeUtils.adjust_volume_for_bad_soundfont(note, note_sequence, soundfont_filepath, msg_type)
             if msg_type == "note_on":
                 msg = MidiUtils.get_note_on_message(note_sequence.channel_num, pitch, note_volume, separation)
-                bar = composition.bars_hash[note.bar_num]
                 notes_on_hash[pitch] = note.midi_timing.off_tick
             else:
                 if pitch in notes_on_hash:
@@ -88,15 +87,14 @@ class AudioExporter:
     def export_audio_formats(self, output_stem, midi_filepath):
         audio_formats = self.export_spec.get_value("audio_formats")
         soundfont_filepath = self.export_spec.get_value("soundfont_filepath")
+        fluidsynth_cli = self.export_spec.get_value("fluidsynth_cli")
         if soundfont_filepath is not None:
             excerpt_length = self.export_spec.get_value("audio_excerpt_duration_s")
-            if "WAV" in audio_formats:
-                wav_filepath = output_stem + ".wav"
-                os.system(f"fluidsynth {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F {wav_filepath} &> /dev/null")
-
+            wav_filepath = output_stem + ".wav"
+            if "WAV" or "MP3" in audio_formats:
+                subprocess.run(f"{fluidsynth_cli} {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F {wav_filepath} &> /dev/null", shell=True)
             if "MP3" in audio_formats:
                 mp3_filepath = output_stem + ".mp3"
-                subprocess.run(["fluidsynth", soundfont_filepath, "--quiet", "--no-shell", midi_filepath, "-T", "wav", "-F", "./temp_delme.wav", "&>", "/dev/null"])
-                # os.system(f"fluidsynth {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F ./temp_delme.wav &> /dev/null")
-                AudioSegment.from_wav("./temp_delme.wav").export(mp3_filepath, format="mp3")
-                os.system(f"rm ./temp_delme.wav")
+                AudioSegment.from_wav(wav_filepath).export(mp3_filepath, format="mp3")
+            if "WAV" not in audio_formats:
+                subprocess.run(f"rm {wav_filepath}", shell=True)

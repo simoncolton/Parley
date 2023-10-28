@@ -162,3 +162,4 @@ cython_debug/
 __MACOSX/
 .idea/
 .DS_Store
+./Parley2/.DS_Store

@@ -6,6 +6,7 @@ from ParleyV2.Specifications.SoundFontClasses import *
 from ParleyV2.Utils.MusicUtils import *
 from ParleyV2.Logistics.Constants import *
 import warnings
+import os
 
 
 # PARAMETERS FOR FLANEURS (2 EPISODE CYCLE)
@@ -26,7 +27,7 @@ class Flaneur:
         epB_chord_allowances = "maj;aug"
 
         # soundfont_filepath = SFYamahaPiano.soundfont_filepath
-        soundfont_filepath = "soundfont.sf2"
+        soundfont_filepath = "/Users/Simon/Dropbox/Code/PycharmProjects/Parley/soundfonts/DoreMarkYamahaS6-v1.6.sf2"
         epA_instrument_num = SFYamahaPiano.piano_YamahaS6
         epB_instrument_num = SFYamahaPiano.piano_YamahaS6
 
@@ -69,18 +70,19 @@ class Flaneur:
 
         discordancy_spec = ParameterisedSpecification(discordancy_spec_params)
 
-        sustain_factor_param = Parameter("sustain_factor")
-        sustain_factor_param.add_constrained_value(4, "efi=A,tn=0")
-        sustain_factor_param.add_constrained_value(1.4, "efi=A")
+        reverb_param = Parameter("reverb")
+#        reverb_param.add_constrained_value(4, "efi=A,tn=0")
+        reverb_param.add_constrained_value(1.4, "efi=A")
+        reverb_param.add_constrained_value(1, "efi=B")
 
-        sustain_pedal_beats_param = Parameter("sustain_pedal_beats")
-        sustain_pedal_beats_param.add_constrained_value(None, "efi=A")
-        sustain_pedal_beats_param.add_constrained_value(4, "efi=B")
+        sustain_pedal_bars_param = Parameter("sustain_pedal_bars")
+        sustain_pedal_bars_param.add_constrained_value(0, "efi=A")
+        sustain_pedal_bars_param.add_constrained_value(1, "efi=B")
 
         performance_params = [
-            sustain_factor_param,
-            sustain_pedal_beats_param,
-            Parameter("end_sustain_pedal_beats", 4)
+            reverb_param,
+            sustain_pedal_bars_param,
+            Parameter("end_sustain_pedal_bars", 1)
         ]
 
         performance_spec = ParameterisedSpecification(performance_params)
@@ -179,6 +181,9 @@ class Flaneur:
             Parameter("show_episode_duration", True),
             Parameter("show_colours", True),
             Parameter("soundfont_filepath", soundfont_filepath),
+            Parameter("fluidsynth_cli", "fluidsynth"),
+            Parameter("musescore_cli", "/Applications/MuseScore\ 3.app/Contents/MacOS/mscore"),
+            Parameter("ffmpeg_cli", "ffmpeg"),
             Parameter("audio_formats", ["WAV", "MP3"]),
             Parameter("dpi", 100),
             Parameter("fps", 5),
@@ -498,14 +503,6 @@ class Flaneur:
         ]
         awkward_rhythm_editor_spec = ParameterisedSpecification(awkward_rhythm_params)
 
-        reload_params = [
-            Parameter("applier_class_name", "LoadCompositionGenerator"),
-            Parameter("file_path", "./Outputs/Flaneurs/flaneur_15386_harmonised.xml"),
-            Parameter("output_composition_id", "reloaded")
-        ]
-
-        reload_spec = ParameterisedSpecification(reload_params)
-
         specs_to_apply_param = []
         specs_to_apply_param.append(form_spec)
         specs_to_apply_param.append(chord_sequence_spec)
@@ -533,7 +530,6 @@ class Flaneur:
         specs_to_apply_param.append(interestingness_edit_analyser_spec)
         specs_to_apply_param.append(discordancy_analyser_spec)
         specs_to_apply_param.append(awkward_rhythm_editor_spec)
-#        specs_to_apply_param.append(reload_spec)
         specs_to_apply_param.append(harmonised_exporter_spec)
 
         composition_params = [
@@ -550,11 +546,12 @@ class Flaneur:
         return composition_generation_spec
 
 def make_flaneur(output_dir):
-	start_time = time.time()
-	nf = Flaneur(output_dir)
-	composition_spec = nf.get_composition_gen_spec()
-	composition = composition_spec.apply()
-	stop_time = time.time()
-	print("Duration: ", stop_time - start_time)
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+    start_time = time.time()
+    nf = Flaneur(output_dir)
+    composition_spec = nf.get_composition_gen_spec()
+    composition = composition_spec.apply()
+    stop_time = time.time()
+    print("Duration: ", stop_time - start_time)
 
-#make_flaneur("/Users/Simon/Dropbox/Code/PycharmProjects/Parley/Outputs/Flaneurs")
+make_flaneur("/Users/Simon/Dropbox/Code/PycharmProjects/Parley/Outputs/Flaneurs")

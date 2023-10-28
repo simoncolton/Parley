@@ -4,9 +4,9 @@ from subprocess import Popen, PIPE
 
 class VideoUtils:
 
-    def get_ffmpeg_pipe(fps, output_file_path):
+    def get_ffmpeg_pipe(fps, ffmpeg_cli, output_file_path):
         fps_s = f"{fps}"
-        parts = ['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-f', 'image2pipe', '-vcodec', 'mjpeg', '-r', fps_s, '-i', '-', '-vcodec', 'mpeg4',
+        parts = [ffmpeg_cli, '-hide_banner', '-loglevel', 'error', '-y', '-f', 'image2pipe', '-vcodec', 'mjpeg', '-r', fps_s, '-i', '-', '-vcodec', 'mpeg4',
                    '-qscale', '5', '-r', fps_s, output_file_path]
         return Popen(parts, stdin=PIPE)
 

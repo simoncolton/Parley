@@ -5,6 +5,7 @@ from ParleyV2.Utils.RhythmUtils import *
 from ParleyV2.Utils.DateUtils import *
 from ParleyV2.Utils.ExtractionUtils import *
 import os
+import subprocess
 
 
 class ScoreExporter:
@@ -46,8 +47,8 @@ class ScoreExporter:
         f = open(musicxml_filepath, "w")
         f.write(doc_string)
         f.close()
-        musescore_command_line = "mscore3"
-        os.system(f"{musescore_command_line} {musicxml_filepath} -o {pdf_filepath} &> /dev/null")
+        musescore_cli = self.export_spec.get_value("musescore_cli")
+        subprocess.run(f"{musescore_cli} {musicxml_filepath} -o {pdf_filepath} &> /dev/null", shell=True)
         return composition
 
     def add_part(self, part_spec, composition, part_ind, part_id):

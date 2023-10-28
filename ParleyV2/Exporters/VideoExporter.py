@@ -6,7 +6,6 @@ from ParleyV2.Utils.MarginUtils import *
 import os
 from tqdm import tqdm
 
-
 class VideoExporter:
 
     def __init__(self, export_spec):
@@ -18,7 +17,8 @@ class VideoExporter:
         mp4_output_file_path = output_stem + ".mp4"
         mp3_filepath = f"{output_stem}.mp3"
         fps = self.export_spec.get_value("fps")
-        pipe = VideoUtils.get_ffmpeg_pipe(fps, temp_mp4_output_file_path)
+        ffmpeg_cli = self.export_spec.get_value("ffmpeg_cli")
+        pipe = VideoUtils.get_ffmpeg_pipe(fps, ffmpeg_cli, temp_mp4_output_file_path)
         pdf_file_path = output_stem + ".pdf"
         bar_boxes = PDFUtils.get_bar_bounding_boxes(pdf_file_path)
         score_images = convert_from_path(pdf_file_path, dpi=self.export_spec.get_value("dpi"))
