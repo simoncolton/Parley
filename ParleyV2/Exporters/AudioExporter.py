@@ -63,10 +63,12 @@ class AudioExporter:
                 midi_track.append(Message('program_change', channel=note_sequence.channel_num, program=instrument_num, time=0))
 
             separation = tick - previous_tick
-            pitch = 10 if note.pitch is None else note.pitch
+            pitch = 0 if note.pitch is None else note.pitch
             soundfont_filepath = self.export_spec.get_value("soundfont_filepath")
             note_sequence = composition.note_sequences_hash[note.note_sequence_num]
             note_volume = VolumeUtils.adjust_volume_for_bad_soundfont(note, note_sequence, soundfont_filepath, msg_type)
+            if pitch == 0:
+                note_volume = 0
             if msg_type == "note_on":
                 msg = MidiUtils.get_note_on_message(note_sequence.channel_num, pitch, note_volume, separation)
                 notes_on_hash[pitch] = note.midi_timing.off_tick

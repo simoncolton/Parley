@@ -26,10 +26,12 @@ class Flaneur:
         epA_chord_allowances = "min;dim"
         epB_chord_allowances = "maj;aug"
 
-        soundfont_filepath = SFYamahaPiano.soundfont_filepath
+#        soundfont_filepath = SFYamahaPiano.soundfont_filepath
+        soundfont_filepath = SFRhodesEP.soundfont_filepath
+        epA_instrument_num = SFRhodesEP.epiano_DX7_EP
 #        soundfont_filepath = "/Users/Simon/Dropbox/Code/PycharmProjects/Parley/soundfonts/DoreMarkYamahaS6-v1.6.sf2"
-        epA_instrument_num = SFYamahaPiano.piano_YamahaS6
-        epB_instrument_num = SFYamahaPiano.piano_YamahaS6
+#        epA_instrument_num = SFYamahaPiano.piano_YamahaS6
+        epB_instrument_num = epA_instrument_num
 
         instrument_param = Parameter("instrument_num")
         instrument_param.add_constrained_value(epA_instrument_num, "efi=A")
