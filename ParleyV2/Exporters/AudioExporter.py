@@ -93,13 +93,11 @@ class AudioExporter:
             excerpt_length = self.export_spec.get_value("audio_excerpt_duration_s")
             wav_filepath = output_stem + ".wav"
             if "WAV" in audio_formats or "MP3" in audio_formats:
-                process = subprocess.Popen(f"{fluidsynth_cli} {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F {wav_filepath} &> /dev/null", shell=True)
+                process = subprocess.Popen(f"{fluidsynth_cli} {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F {wav_filepath} > /dev/null", shell=True)
                 process.wait()
             if "MP3" in audio_formats:
-                #process doesn't seem to wait long enough for the WAV file to be written, so need to sleep
-                time.sleep(1)
                 mp3_filepath = output_stem + ".mp3"
                 AudioSegment.from_wav(wav_filepath).export(mp3_filepath, format="mp3")
-            if "WAV" not in audio_formats:
-                process = subprocess.Popen("rm ./temp_delme.wav", shell=True)
-                process.wait()
+                if "WAV" not in audio_formats:
+                    process = subprocess.Popen(f"rm {wav_filepath}", shell=True)
+                    process.wait()
