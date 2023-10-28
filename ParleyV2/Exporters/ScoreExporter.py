@@ -48,7 +48,8 @@ class ScoreExporter:
         f.write(doc_string)
         f.close()
         musescore_cli = self.export_spec.get_value("musescore_cli")
-        subprocess.run(f"{musescore_cli} {musicxml_filepath} -o {pdf_filepath} &> /dev/null", shell=True)
+        process = subprocess.Popen(f"{musescore_cli} {musicxml_filepath} -o {pdf_filepath} &> /dev/null", shell=True)
+        process.wait()
         return composition
 
     def add_part(self, part_spec, composition, part_ind, part_id):

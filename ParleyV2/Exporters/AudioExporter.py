@@ -91,8 +91,9 @@ class AudioExporter:
         if soundfont_filepath is not None:
             excerpt_length = self.export_spec.get_value("audio_excerpt_duration_s")
             wav_filepath = output_stem + ".wav"
-            if "WAV" or "MP3" in audio_formats:
-                subprocess.run(f"{fluidsynth_cli} {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F {wav_filepath} &> /dev/null", shell=True)
+            if "WAV" in audio_formats or "MP3" in audio_formats:
+                process = subprocess.Popen(f"{fluidsynth_cli} {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F {wav_filepath} &> /dev/null", shell=True)
+                process.wait()
             if "MP3" in audio_formats:
                 mp3_filepath = output_stem + ".mp3"
                 AudioSegment.from_wav(wav_filepath).export(mp3_filepath, format="mp3")
