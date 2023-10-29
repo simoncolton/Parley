@@ -72,7 +72,6 @@ class HarmonisationEditor:
         directly_following_notes = TimingUtils.get_directly_following_notes(new_note, 3, composition)
         surrounding_notes = directly_preceding_notes + directly_following_notes
 
-
         if note.pitch is None:
             return new_note
         if note_types != "all" and note.note_type != note_types:

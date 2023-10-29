@@ -505,6 +505,13 @@ class Flaneur:
 
         discordancy_analyser_spec = ParameterisedSpecification(discordancy_analyser_params)
 
+        tuplet_analyser_params = [
+            Parameter("applier_class_name", "TupletAnalyser"),
+            Parameter("output_composition_id", "tuplets_analysed")
+        ]
+
+        tuplet_analyser_spec = ParameterisedSpecification(tuplet_analyser_params)
+
         harmonised_score_parts = [{"part_id": "Piano", "part_name": "Piano",
                                   "track_details": [("treble", [4, 5]), ("bass", [0, 1, 2, 3])]}]
 
@@ -552,6 +559,7 @@ class Flaneur:
         specs_to_apply_param.append(harmonisation_edit_spec)
         specs_to_apply_param.append(interestingness_edit_analyser_spec)
         specs_to_apply_param.append(discordancy_analyser_spec)
+        specs_to_apply_param.append(tuplet_analyser_spec)
         specs_to_apply_param.append(awkward_rhythm_editor_spec)
         specs_to_apply_param.append(harmonised_exporter_spec)
 

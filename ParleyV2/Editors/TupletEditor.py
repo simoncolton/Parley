@@ -42,6 +42,3 @@ class TupletEditor:
                     lt = lt - 1 if (lt % 2 == 1) else lt
                     mid_ind = int(round(lt/2))
                     tuplet[mid_ind].timing.tuplet_note_type = "mid"
-                    if tuplet_size == 6:
-                        bar = composition.bars_hash[start_note.bar_num]
-                        MarginUtils.add_margin_comment(bar, "Sextuplet", "brown")
