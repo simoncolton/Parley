@@ -27,15 +27,35 @@ class Flaneur:
         epB_chord_allowances = "maj;aug"
 
 #        soundfont_filepath = SFYamahaPiano.soundfont_filepath
-        soundfont_filepath = SFRhodesEP.soundfont_filepath
-        epA_instrument_num = SFRhodesEP.epiano_DX7_EP
+#        soundfont_filepath = SFRhodesEP.soundfont_filepath
+        soundfont_filepath = SFKBHChoir.soundfont_filepath
+        melody_instrument_num = SFKBHChoir.voice_Vocal_Aaah
+        harmonisation_instrument_num = SFKBHChoir.voice_Irina_Brochin
+        chords_instrument_num = SFKBHChoir.voice_Mix__Choir
+        bass_instrument_num = SFKBHChoir.voice_Oooh_to_Aaah_Vel
+
+        soundfont_filepath = SFStrings4U.soundfont_filepath
+        melody_instrument_num = SFStrings4U.strings_Violin
+        harmonisation_instrument_num = SFStrings4U.strings_Violin
+        chords_instrument_num = SFStrings4U.strings_Full_Strings_Vel
+        bass_instrument_num = SFStrings4U.strings_Cello
+
+        soundfont_filepath = SFSonatina.soundfont_filepath
+        melody_instrument_num = SFSonatina.strings_Violin_Solo
+        harmonisation_instrument_num = SFSonatina.strings_Second_Violins_Sustain
+        chords_instrument_num = SFSonatina.strings_Cello_Section_Sustai
+        bass_instrument_num = SFSonatina.strings_Basses_Sustain
+
+
+
+        #epA_instrument_num = SFRhodesEP.epiano_FLT_Bright
 #        soundfont_filepath = "/Users/Simon/Dropbox/Code/PycharmProjects/Parley/soundfonts/DoreMarkYamahaS6-v1.6.sf2"
 #        epA_instrument_num = SFYamahaPiano.piano_YamahaS6
-        epB_instrument_num = epA_instrument_num
 
-        instrument_param = Parameter("instrument_num")
-        instrument_param.add_constrained_value(epA_instrument_num, "efi=A")
-        instrument_param.add_constrained_value(epB_instrument_num, "efi=B")
+        melody_instrument_param = Parameter("instrument_num", melody_instrument_num)
+        harmonisation_instrument_param = Parameter("instrument_num", harmonisation_instrument_num)
+        chords_instrument_param = Parameter("instrument_num", chords_instrument_num)
+        bass_instrument_param = Parameter("instrument_num", bass_instrument_num)
 
         random.seed(random_seed)
 
@@ -74,12 +94,12 @@ class Flaneur:
 
         reverb_param = Parameter("reverb")
 #        reverb_param.add_constrained_value(4, "efi=A,tn=0")
-        reverb_param.add_constrained_value(1.4, "efi=A")
-        reverb_param.add_constrained_value(1, "efi=B")
+        reverb_param.add_constrained_value(0.2, "efi=A")
+        reverb_param.add_constrained_value(0.6, "efi=B")
 
         sustain_pedal_bars_param = Parameter("sustain_pedal_bars")
         sustain_pedal_bars_param.add_constrained_value(0, "efi=A")
-        sustain_pedal_bars_param.add_constrained_value(1, "efi=B")
+        sustain_pedal_bars_param.add_constrained_value(0, "efi=B")
 
         performance_params = [
             reverb_param,
@@ -187,6 +207,7 @@ class Flaneur:
             Parameter("musescore_cli", "/Applications/MuseScore\ 3.app/Contents/MacOS/mscore"),
             Parameter("ffmpeg_cli", "ffmpeg"),
             Parameter("audio_formats", ["WAV", "MP3"]),
+            Parameter("video_fade_in", False),
             Parameter("dpi", 100),
             Parameter("fps", 5),
             Parameter("end_rest_ms", 3000),
@@ -226,7 +247,7 @@ class Flaneur:
             Parameter("leads_dynamics", False),
             Parameter("backbone_note", 1),
             Parameter("focal_pitch", 43),
-            instrument_param,
+            bass_instrument_param,
             bass_rhythm_param,
             accompaniment_volume_param
         ]
@@ -251,7 +272,7 @@ class Flaneur:
             Parameter("leads_dynamics", False),
             Parameter("backbone_note", 1),
             Parameter("focal_pitch", 55),
-            instrument_param,
+            chords_instrument_param,
             chord_rhythm_param,
             accompaniment_volume_param
         ]
@@ -308,7 +329,7 @@ class Flaneur:
             Parameter("leads_dynamics", True),
             Parameter("octave_offset", 0),
             Parameter("note_length", 1),
-            instrument_param,
+            melody_instrument_param,
             vl_melody_volume_param,
             vl_melody_backbone_length_param,
             vl_melody_backbone_choice_param,
@@ -459,7 +480,7 @@ class Flaneur:
             Parameter("map_to_scale", False),
             Parameter("keep_ties", True),
             Parameter("discordancy_avoid", discordancy_spec),
-            instrument_param,
+            harmonisation_instrument_param,
             fixed_scale_param,
             vl_melody_in_bar_repetition_param,
             vl_melody_over_bar_repetition_param

@@ -123,7 +123,10 @@ class VideoExporter:
                     if overall_frame_num == fps:
                         image.paste(thumbnail_image, (thumbnail_x_offset, thumbnail_y_offset))
                         for i in range(0, fps):
-                            fade_in_frame_image = self.get_fade_in_frame(i / fps, image)
+                            if self.export_spec.get_value("video_fade_in") == True:
+                                fade_in_frame_image = self.get_fade_in_frame(i / fps, image)
+                            else:
+                                fade_in_frame_image = image
                             VideoUtils.pass_to_ffmpeg_pipe(pipe, fade_in_frame_image)
                         image.paste(composite_image, (thumbnail_x_offset, thumbnail_y_offset))
                     moved_line = \
