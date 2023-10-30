@@ -1,3 +1,5 @@
+import copy
+
 from PIL import ImageDraw, Image, ImageFont
 from pdf2image import convert_from_path
 from ParleyV2.Utils.PDFUtils import *
@@ -13,7 +15,8 @@ class VideoExporter:
     def __init__(self, export_spec):
         self.export_spec = export_spec
 
-    def apply(self, composition):
+    def apply(self, start_composition):
+        composition = copy.deepcopy(start_composition)
         output_stem = self.export_spec.get_value("output_stem")
         temp_mp4_output_file_path = output_stem + "_temp.mp4"
         mp4_output_file_path = output_stem + ".mp4"
@@ -152,6 +155,7 @@ class VideoExporter:
         process = subprocess.Popen(f"ffmpeg -hide_banner -loglevel error -i {temp_mp4_output_file_path} -itsoffset 1 -i {mp3_filepath} -c:v copy -map 0:v -map 1:a -y {mp4_output_file_path}", shell=True)
         process.wait()
         subprocess.run(f"rm {temp_mp4_output_file_path}", shell=True)
+        return composition
 
     def get_annotated_images(self, score_images, long_score_image, thumbnail_image, sidebar_width, bars, bar_boxes):
         font = ImageFont.truetype('Tahoma.ttf', 20)

@@ -35,7 +35,7 @@ class RhythmNoteSequenceGenerator:
                         rest_timing = Timing(start64th=moving64th, duration64ths=timing.start64th - moving64th)
                         rest = Note(pitch=None, volume=0, note_type="backbone",
                                     timing=rest_timing, note_sequence_num=note_sequence.note_sequence_num,
-                                    bar_num=note_sequence.bar_num)
+                                    bar_num=note_sequence.bar_num, track_note_num=None)
                         note_sequence.notes.append(rest)
                     chord_for_note = None
                     for chord_ind in range(0, len(bar.chord_nums) - 1):
@@ -51,14 +51,16 @@ class RhythmNoteSequenceGenerator:
                     pitch = MusicUtils.map_pitch_to_focal_pitch(pitch, spec["focal_pitch"])
                     note = Note(pitch=pitch, volume=volume, note_type="backbone",
                                 timing=timing, chord_num=chord_for_note.chord_num,
-                                note_sequence_num=note_sequence.note_sequence_num, bar_num=note_sequence.bar_num)
+                                note_sequence_num=note_sequence.note_sequence_num, bar_num=note_sequence.bar_num,
+                                track_note_num=None)
                     note_sequence.notes.append(note)
                     moving64th = timing.start64th + timing.duration64ths
                 if moving64th < 64:
                     rest_timing = Timing(start64th=moving64th, duration64ths=64 - moving64th)
                     rest = Note(pitch=None, volume=0, note_type="backbone",
                                 timing=rest_timing, note_sequence_num=note_sequence.note_sequence_num,
-                                bar_num=note_sequence.bar_num)
+                                bar_num=note_sequence.bar_num,
+                                track_note_num=None)
                     note_sequence.notes.append(rest)
             bar_start_volume = bar_end_volume
         return composition

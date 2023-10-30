@@ -18,14 +18,6 @@ class AudioExporter:
         midi_file = MidiFile(type=1)
         performance_spec = self.export_spec.get_value("performance_spec")
         TimingUtils.add_midi_timings(composition, performance_spec)
-        """
-        if self.export_spec.get_value("single_bar_num_to_export") is not None:
-            for bar in composition.bars:
-                for ns in bar.note_sequences:
-                    for note in ns.notes:
-                        note.midi_timing.on_tick -= bar.start_tick
-                        note.midi_timing.off_tick -= bar.start_tick
-        """
         track_nums = ExtractionUtils.get_track_nums(composition)
         for track_num in track_nums:
             self.add_track(track_num, composition, midi_file)
@@ -33,7 +25,6 @@ class AudioExporter:
         midi_filepath = output_stem + ".mid"
         midi_file.save(midi_filepath)
         self.export_audio_formats(output_stem, midi_filepath)
-
         return composition
 
     def add_track(self, track_num, composition, midi_file):

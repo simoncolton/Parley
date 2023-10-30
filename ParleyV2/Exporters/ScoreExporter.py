@@ -214,6 +214,10 @@ class ScoreExporter:
             if notations_elem is None:
                 notations_elem = XMLUtils.add_child(self.doc, note_elem, "notations")
             XMLUtils.add_child(self.doc, notations_elem, "tied", {"type": "stop"})
+        if note.pause_64ths is not None:
+            if notations_elem is None:
+                notations_elem = XMLUtils.add_child(self.doc, note_elem, "notations")
+            XMLUtils.add_child(self.doc, notations_elem, "fermata", {})
         if note.timing.tuplet_note_type is not None:
             slur_type = None
             if note.timing.tuplet_note_type == "start":

@@ -1,6 +1,7 @@
 from ParleyV2.Exporters.AudioExporter import *
 from ParleyV2.Specifications.ConstrainedSpecification import *
 from tqdm import tqdm
+import copy
 
 class BarAudioExporter:
 
@@ -8,6 +9,7 @@ class BarAudioExporter:
         self.export_spec = export_spec
 
     def apply(self, start_composition):
+        composition = copy.deepcopy(start_composition)
         output_stem = self.export_spec.get_value("output_stem")
         wav_filepath = output_stem + ".wav"
         for bar in tqdm(start_composition.bars, desc="Exporting bar WAVs"):
@@ -17,4 +19,4 @@ class BarAudioExporter:
             os.system(f"ffmpeg -y -ss {start_s} -i {wav_filepath} -t {duration_s} -hide_banner -c copy {bar_wav_filepath} &> /dev/null")
         os.system(f"zip {output_stem}_bars.zip {output_stem}_*_*.wav &> /dev/null")
         os.system(f"rm {output_stem}_*_*.wav")
-        return start_composition
+        return composition

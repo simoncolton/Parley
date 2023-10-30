@@ -38,6 +38,8 @@ class Composition:
     bars_hash: {} = None
     note_sequences_hash: {} = None
     chords_hash: {} = None
+    track_notes_hash: {} = None
+    episode_track_notes_hash: {} = None
 
 
 @dataclass
@@ -94,7 +96,6 @@ class Note:
     volume: int = None
     timing: Timing = None
     midi_timing: Timing = None
-    duration_ticks = None
     cutoff_prop: int = None
     note_type: str = None
     tie_type: str = None
@@ -104,6 +105,9 @@ class Note:
     chord_num: int = None
     note_sequence_num: int = None
     bar_num: int = None
+    track_note_num: int = None
+    episode_track_note_num: int = None
+    pause_64ths: int = None
 
 
 @dataclass

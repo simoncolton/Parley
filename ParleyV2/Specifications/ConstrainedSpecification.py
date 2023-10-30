@@ -7,7 +7,10 @@ from importlib import import_module
 class Constraint:
 
     def __init__(self, constraint_string):
-        self.constraint_condition = [c for c in ["=", "<", ">"] if c in constraint_string][0]
+        for c in ["<=", ">=", "=", "<", ">"]:
+            if c in constraint_string:
+                self.constraint_condition = c
+                break
         self.constraint_subject = constraint_string.split(self.constraint_condition)[0]
         self.constraint_requirement = constraint_string.split(self.constraint_condition)[1]
 
@@ -24,6 +27,9 @@ class Constraint:
         elif self.constraint_subject == "cbc": to_check = bar.bar_num - 1
         elif self.constraint_subject == "br": to_check = bar.bar_random_int
         elif self.constraint_subject == "tn": to_check = track_num
+        elif self.constraint_subject == "tnn": to_check = note.track_note_num
+        elif self.constraint_subject == "enn": to_check = note.episode_track_note_num
+        elif self.constraint_subject == "nl": to_check = note.timing.duration64ths
 
         if "/" in self.constraint_requirement:
             numerator = int(self.constraint_requirement.split("/")[0]) - 1
@@ -48,6 +54,37 @@ class Constraint:
                 return bar.episode_bar_num == bar_num_required
             else:
                 return bar.bar_num == bar_num_required
+
+        if self.constraint_subject == "tnn":
+            note_num_required = int(self.constraint_requirement)
+            if "-" in self.constraint_requirement:
+                track_num = composition.note_sequences_hash[note.note_sequence_num].track_num
+                num_notes_in_track = len(composition.track_notes_hash[track_num])
+                note_num_required = num_notes_in_track + int(self.constraint_requirement)
+            return note.track_note_num == note_num_required
+
+        if self.constraint_subject == "enn":
+            note_num_required = int(self.constraint_requirement)
+            if "-" in self.constraint_requirement:
+                track_num = composition.note_sequences_hash[note.note_sequence_num].track_num
+                episode_num = composition.bars_hash[note.bar_num].episode_num
+                num_notes_in_track = len(composition.episode_track_notes_hash[(track_num, episode_num)])
+                note_num_required = num_notes_in_track + int(self.constraint_requirement)
+            return note.episode_track_note_num == note_num_required
+
+        if self.constraint_subject == "nl":
+            note_length = int(self.constraint_requirement)
+            if self.constraint_condition == ">=":
+                return note.timing.duration64ths >= note_length
+            if self.constraint_condition == "<=":
+                return note.timing.duration64ths <= note_length
+            if self.constraint_condition == "=":
+                return note.timing.duration64ths == note_length
+            if self.constraint_condition == ">":
+                return note.timing.duration64ths > note_length
+            if self.constraint_condition == "<":
+                return note.timing.duration64ths < note_length
+
 
 # VARIABLES
 
@@ -255,7 +292,6 @@ class ParameterisedSpecification:
         return parameter.value.expand_value(None, None, None, None, None)
 
     def instantiate_me(self, composition=None, bar=None, chord=None, note=None):
-
         episode = None if (composition is None or bar is None) else composition.episodes_hash[bar.episode_num]
         track_num = None if note is None else composition.note_sequences_hash[note.note_sequence_num].track_num
         instantiated_params = {}

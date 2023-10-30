@@ -86,7 +86,7 @@ class PatternNoteSequenceGenerator:
             timing = Timing(chord.timing.start64th + s64, d64)
             note = Note(pitch=pitch, volume=volume, note_type="backbone",
                         timing=timing, chord_num=chord.chord_num,
-                        note_sequence_num=note_sequence_num, bar_num=bar_num)
+                        note_sequence_num=note_sequence_num, bar_num=bar_num, track_note_num=None)
             s64 += d64
             if note_num not in pattern.rests:
                 notes.append(note)

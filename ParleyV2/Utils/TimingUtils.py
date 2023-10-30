@@ -115,6 +115,14 @@ class TimingUtils:
                     diff = bar.duration_ticks - total_ticks
                     notes[-1].midi_timing.duration_ticks += diff
 
+        for bar in composition.bars:
+            for note_sequence in bar.note_sequences:
+                for note in note_sequence.notes:
+                    if note.pause_64ths is not None:
+                        all_notes_to_pause = TimingUtils.get_all_notes_to_pause(note_sequence.track_num, note, bar)
+                        extra = int(round((note.pause_64ths/64) * bar.duration_ticks))
+                        TimingUtils.extend_note_duration(composition, note, all_notes_to_pause, extra)
+
         for track_num in track_nums:
             notes = ExtractionUtils.get_notes_for_track_num(composition, track_num)
             tied_note = None
@@ -149,12 +157,42 @@ class TimingUtils:
                         extra = int(round(note.midi_timing.duration_ticks * reverb))
                         note.midi_timing.duration_ticks += extra
                         note.midi_timing.off_tick += extra
-                    if spec["end_sustain_pedal_bars"] != 0:
-                        last_bar = composition.bars[-1]
-                        composition_end_tick = last_bar.end_tick + int((last_bar.duration_ticks/4) * spec["end_sustain_pedal_bars"])
-                        note.midi_timing.off_tick = min(note.midi_timing.off_tick, composition_end_tick)
-                        if note == notes[-1]:
-                            note.midi_timing.off_tick = composition_end_tick
 
+    def get_all_notes_to_pause(track_num, note, bar):
+        notes_to_pause_hash = {}
+        notes_to_pause_hash[track_num] = note
 
+        for note_sequence in bar.note_sequences:
+            if note_sequence.track_num != track_num:
+                poss_notes = []
+                overlap_v = []
+                for n in note_sequence.notes:
+                    if n.timing.start64th >= note.timing.start64th and \
+                            n.timing.start64th + n.timing.duration64ths <= note.timing.start64th + note.timing.duration64ths:
+                        poss_notes.append(n)
+                    overlap_v.append((TimingUtils.get_note_overlap_duration64ths(n, note), n))
+                if len(poss_notes) > 0:
+                    notes_to_pause_hash[note_sequence.track_num]=poss_notes[-1]
+                else:
+                    overlap_v.sort(key=lambda x: x[0])
+                    notes_to_pause_hash[note_sequence.track_num]=overlap_v[-1][1]
+        return notes_to_pause_hash
 
+    def extend_note_duration(composition, note, all_notes_to_pause, extra):
+        bar = composition.bars_hash[note.bar_num]
+        bar.duration_ticks += extra
+        bar.end_tick += extra
+        bars_adjusted = [bar]
+        for track_num in all_notes_to_pause.keys():
+            n = all_notes_to_pause[track_num]
+            n.midi_timing.duration_ticks += extra
+            n.midi_timing.off_tick += extra
+            for tn in ExtractionUtils.get_notes_for_track_num(composition, track_num):
+                if tn.track_note_num > n.track_note_num:
+                    tn.midi_timing.on_tick += extra
+                    tn.midi_timing.off_tick += extra
+                    bar = composition.bars_hash[tn.bar_num]
+                    if bar not in bars_adjusted:
+                        bar.start_tick += extra
+                        bar.end_tick += extra
+                        bars_adjusted.append(bar)

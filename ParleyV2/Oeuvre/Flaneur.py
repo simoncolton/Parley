@@ -19,15 +19,17 @@ class Flaneur:
     def get_composition_gen_spec(self):
 
         random_seed = random.randint(0, 100000)
-        #random_seed = 76518
+        #random_seed = 55593
 
         print("Random seed:", random_seed)
 
         epA_chord_allowances = "min;dim"
         epB_chord_allowances = "maj;aug"
 
-#        soundfont_filepath = SFYamahaPiano.soundfont_filepath
-#        soundfont_filepath = SFRhodesEP.soundfont_filepath
+        soundfont_filepath = SFYamahaPiano.soundfont_filepath
+
+        """
+        soundfont_filepath = SFRhodesEP.soundfont_filepath
         soundfont_filepath = SFKBHChoir.soundfont_filepath
         melody_instrument_num = SFKBHChoir.voice_Vocal_Aaah
         harmonisation_instrument_num = SFKBHChoir.voice_Irina_Brochin
@@ -50,7 +52,12 @@ class Flaneur:
 
         #epA_instrument_num = SFRhodesEP.epiano_FLT_Bright
 #        soundfont_filepath = "/Users/Simon/Dropbox/Code/PycharmProjects/Parley/soundfonts/DoreMarkYamahaS6-v1.6.sf2"
-#        epA_instrument_num = SFYamahaPiano.piano_YamahaS6
+        """
+        instrument_num = SFYamahaPiano.piano_YamahaS6
+        melody_instrument_num = instrument_num
+        harmonisation_instrument_num = instrument_num
+        chords_instrument_num = instrument_num
+        bass_instrument_num = instrument_num
 
         melody_instrument_param = Parameter("instrument_num", melody_instrument_num)
         harmonisation_instrument_param = Parameter("instrument_num", harmonisation_instrument_num)
@@ -103,8 +110,7 @@ class Flaneur:
 
         performance_params = [
             reverb_param,
-            sustain_pedal_bars_param,
-            Parameter("end_sustain_pedal_bars", 1)
+            sustain_pedal_bars_param
         ]
 
         performance_spec = ParameterisedSpecification(performance_params)
@@ -533,6 +539,16 @@ class Flaneur:
         ]
         awkward_rhythm_editor_spec = ParameterisedSpecification(awkward_rhythm_params)
 
+        pause_length_param = Parameter("pause_length_64ths")
+        pause_length_param.add_constrained_value(64, "tn=4,tnn=-1", 1)
+        pause_length_param.add_constrained_value(8, "tn=4,enn=-1,nl>=16,nl<32", 0)
+        pause_editor_params = [
+            Parameter("applier_class_name", "PauseEditor"),
+            Parameter("output_composition_id", "pause_edited"),
+            pause_length_param
+        ]
+        pause_editor_spec = ParameterisedSpecification(pause_editor_params)
+
         specs_to_apply_param = []
         specs_to_apply_param.append(form_spec)
         specs_to_apply_param.append(chord_sequence_spec)
@@ -561,6 +577,7 @@ class Flaneur:
         specs_to_apply_param.append(discordancy_analyser_spec)
         specs_to_apply_param.append(tuplet_analyser_spec)
         specs_to_apply_param.append(awkward_rhythm_editor_spec)
+        specs_to_apply_param.append(pause_editor_spec)
         specs_to_apply_param.append(harmonised_exporter_spec)
 
         composition_params = [

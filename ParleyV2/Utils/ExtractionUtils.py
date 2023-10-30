@@ -23,6 +23,15 @@ class ExtractionUtils:
                     notes_for_track_num.extend(note_sequence.notes)
         return notes_for_track_num
 
+    def get_episode_notes_for_track_num(composition, episode_num, track_num):
+        episode_notes_for_track_num = []
+        for bar in composition.bars:
+            if bar.episode_num == episode_num:
+                for note_sequence in bar.note_sequences:
+                    if note_sequence.track_num == track_num:
+                        episode_notes_for_track_num.extend(note_sequence.notes)
+        return episode_notes_for_track_num
+
     def get_note_sequences_for_track_num(composition, track_num):
         note_sequences = []
         for bar in composition.bars:

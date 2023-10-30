@@ -2,6 +2,7 @@ import dataclasses
 from dataclasses import asdict
 from ParleyV2.Utils.XMLUtils import *
 from ParleyV2.Artefacts.Artefacts import *
+import copy
 
 
 class DataExporter:
@@ -10,7 +11,8 @@ class DataExporter:
         self.export_spec = export_spec
         self.doc = None
 
-    def apply(self, composition):
+    def apply(self, start_composition):
+        composition = copy.deepcopy(start_composition)
         output_stem = self.export_spec.get_value("output_stem")
         docu, root = XMLUtils.get_doc_and_root("composition", self.get_attributes(composition))
         self.doc = docu
