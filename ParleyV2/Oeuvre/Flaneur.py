@@ -88,14 +88,13 @@ class Flaneur:
             Parameter("max_grind_duration_ms", 0)
         ]
 
-        """
+
         discordancy_spec_params = [
             Parameter("max_clang_severity", None),
             Parameter("max_clang_duration_ms", None),
             Parameter("max_grind_severity", None),
             Parameter("max_grind_duration_ms", None)
         ]
-        """
 
         discordancy_spec = ParameterisedSpecification(discordancy_spec_params)
 
@@ -476,10 +475,10 @@ class Flaneur:
             Parameter("channel_num", 5),
             Parameter("track_num_to_harmonise", 4),
             Parameter("note_types", "backbone"),
-            Parameter("intervals_allowed", [9, 7, 4, 3, -3, -5, -8]),
+            #Parameter("intervals_allowed", [9, 7, 4, 3, -3, -5, -8]),
             #Parameter("intervals_allowed", [9]),
             #Parameter("intervals_allowed", [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
-            #Parameter("intervals_allowed", [-4, -3, -2, 2, 3, 4, 12 ]),
+            Parameter("intervals_allowed", [-4, -3, -2, 2, 3, 4, 12 ]),
             Parameter("randomise_intervals", True),
             Parameter("pitch_range_low", 60),
             Parameter("pitch_range_high", 100),

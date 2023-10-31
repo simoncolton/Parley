@@ -308,4 +308,8 @@ class ParameterisedSpecification:
                 module = import_module(applier_path)
                 klass = getattr(module, applier_class_name)(self)
                 return klass.apply(starting_composition)
+            else:
+                module = import_module(applier_class_name)
+                klass = getattr(module, applier_class_name)(self)
+                return klass.apply(starting_composition)
 
