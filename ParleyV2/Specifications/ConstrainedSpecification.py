@@ -302,7 +302,6 @@ class ParameterisedSpecification:
 
     def apply(self, starting_composition=None):
         applier_class_name = self.parameters["applier_class_name"].value.value_id
-        print(applier_class_name)
         for class_type in ["Designer", "Generator", "Editor", "Analyser", "Communicator", "Exporter", "Extractor"]:
             if class_type in applier_class_name:
                 applier_path = f"ParleyV2.{class_type}s.{applier_class_name}"
