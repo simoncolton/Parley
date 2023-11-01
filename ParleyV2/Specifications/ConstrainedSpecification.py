@@ -302,14 +302,14 @@ class ParameterisedSpecification:
 
     def apply(self, starting_composition=None):
         applier_class_name = self.parameters["applier_class_name"].value.value_id
+        print(applier_class_name)
         for class_type in ["Designer", "Generator", "Editor", "Analyser", "Communicator", "Exporter", "Extractor"]:
             if class_type in applier_class_name:
                 applier_path = f"ParleyV2.{class_type}s.{applier_class_name}"
-                module = import_module(applier_path)
-                klass = getattr(module, applier_class_name)(self)
-                return klass.apply(starting_composition)
-            else:
-                module = import_module(applier_class_name)
+                try:
+                    module = import_module(applier_path)
+                except:
+                    module = import_module("__main__")
                 klass = getattr(module, applier_class_name)(self)
                 return klass.apply(starting_composition)
 
