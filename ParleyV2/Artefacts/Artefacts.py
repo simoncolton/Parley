@@ -65,6 +65,8 @@ class Bar:
     episode_num: int = None
     margin_comments: [] = None
     directions: [] = None
+    mtg_vectors: [] = None
+    mtg_activation_tags: [] = None
 
 
 @dataclass
