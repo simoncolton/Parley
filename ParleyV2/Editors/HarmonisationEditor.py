@@ -97,7 +97,6 @@ class HarmonisationEditor:
             if not is_ok:
                 new_note.pitch = None
             else:
-                new_note.score_colour = "orange"
                 break
         if new_note.pitch is None and spec["map_to_scale"]:
             for interval in intervals:
