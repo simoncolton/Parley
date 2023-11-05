@@ -552,8 +552,8 @@ class Flaneur:
         target_tag_param.add_constrained_value("mtg_jamendo_moodtheme__happy", "efi=A")
         target_tag_param.add_constrained_value("mtg_jamendo_moodtheme__sad", "efi=B")
         scale_param = Parameter("fixed_scale")
-        scale_param.add_constrained_value(scaleA, "efi=A")
-        scale_param.add_constrained_value(scaleB, "efi=B")
+        scale_param.add_constrained_value(None, "efi=A")
+        scale_param.add_constrained_value(None, "efi=B")
         listening_edit_params = [
             Parameter("applier_class_name", "MTGListeningModelEditor"),
             Parameter("soundfont_filepath", soundfont_filepath),
@@ -561,8 +561,8 @@ class Flaneur:
             Parameter("fluidsynth_cli", "fluidsynth"),
             Parameter("ffmpeg_cli", "ffmpeg"),
             Parameter("temp_dir", "/Users/Simon/Dropbox/Code/PycharmProjects/Parley/Temp"),
-            Parameter("num_bars_per_episode", 10),
-            Parameter("num_hill_climb_trials_per_bar", 5),
+            Parameter("num_bars_per_episode", 2),
+            Parameter("num_hill_climb_trials_per_bar", 2),
             Parameter("track_num", 4),
             target_tag_param,
             fixed_scale_param
