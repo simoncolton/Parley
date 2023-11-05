@@ -63,7 +63,7 @@ class BasicFormDesigner:
                       start64th=0, # will calculate this later
                       start_tick=start_tick, end_tick=end_tick, duration_ticks=bar_duration_ticks,
                       num_beats=spec["beats_per_bar"], note_sequences=[], episode_num=episode.episode_num,
-                      margin_comments=[], mtg_vectors=[], mtg_activations_hash={}, mtg_activation_highlights=[])
+                      margin_comments=[], mtg_activation_vectors=[], mtg_activations_hash={}, mtg_activation_highlights=[])
             ticks_per_64th = bar.duration_ticks / 64
             bar.tick_timings = [int(round(ticks_per_64th * t)) for t in range(0, 65)]
             bar.bar_random_int = random.randint(0, 100000)
