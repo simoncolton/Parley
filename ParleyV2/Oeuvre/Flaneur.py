@@ -19,7 +19,7 @@ class Flaneur:
     def get_composition_gen_spec(self):
 
         random_seed = random.randint(0, 100000)
-        #random_seed = 55593
+        random_seed = 60161
 
         print("Random seed:", random_seed)
 
@@ -548,18 +548,41 @@ class Flaneur:
         ]
         pause_editor_spec = ParameterisedSpecification(pause_editor_params)
 
+        target_tag_param = Parameter("target_tag")
+        target_tag_param.add_constrained_value("mtg_jamendo_moodtheme__happy", "efi=A")
+        target_tag_param.add_constrained_value("mtg_jamendo_moodtheme__sad", "efi=B")
+        scale_param = Parameter("fixed_scale")
+        scale_param.add_constrained_value(scaleA, "efi=A")
+        scale_param.add_constrained_value(scaleB, "efi=B")
+        listening_edit_params = [
+            Parameter("applier_class_name", "MTGListeningModelEditor"),
+            Parameter("soundfont_filepath", soundfont_filepath),
+            Parameter("performance_spec", performance_spec),
+            Parameter("fluidsynth_cli", "fluidsynth"),
+            Parameter("ffmpeg_cli", "ffmpeg"),
+            Parameter("temp_dir", "/Users/Simon/Dropbox/Code/PycharmProjects/Parley/Temp"),
+            Parameter("num_bars_per_episode", 10),
+            Parameter("num_hill_climb_trials_per_bar", 5),
+            Parameter("track_num", 4),
+            target_tag_param,
+            fixed_scale_param
+        ]
+        listening_edit_spec = ParameterisedSpecification(listening_edit_params)
+
         specs_to_apply_param = []
         specs_to_apply_param.append(form_spec)
         specs_to_apply_param.append(chord_sequence_spec)
         specs_to_apply_param.append(lead_sheet_generator_spec)
-        specs_to_apply_param.append(lead_sheet_exporter_spec)
+#        specs_to_apply_param.append(lead_sheet_exporter_spec)
         specs_to_apply_param.append(bass_backbone_note_sequence_spec)
         specs_to_apply_param.append(chord_tonic_backbone_note_sequence_spec)
         specs_to_apply_param.append(chord_third_backbone_note_sequence_spec)
         specs_to_apply_param.append(chord_fifth_backbone_note_sequence_spec)
         specs_to_apply_param.append(vl_melody_spec)
         specs_to_apply_param.append(melody_passing_notes_spec)
+        specs_to_apply_param.append(listening_edit_spec)
         specs_to_apply_param.append(pre_edit_exporter_spec)
+        """
         specs_to_apply_param.append(vl_melody_interestingness_edit_spec)
         specs_to_apply_param.append(bass_interestingness_edit_spec)
         specs_to_apply_param.append(chord_tonic_interestingness_edit_spec)
@@ -578,6 +601,7 @@ class Flaneur:
         specs_to_apply_param.append(awkward_rhythm_editor_spec)
         specs_to_apply_param.append(pause_editor_spec)
         specs_to_apply_param.append(harmonised_exporter_spec)
+        """
 
         composition_params = [
             Parameter("applier_class_name", "CompositionGenerator"),

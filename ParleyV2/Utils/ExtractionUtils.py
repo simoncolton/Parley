@@ -39,3 +39,10 @@ class ExtractionUtils:
                 if note_sequence.track_num == track_num:
                     note_sequences.append(note_sequence)
         return note_sequences
+
+    def get_bars_for_episode_num(composition, episode_num):
+        bars = []
+        for bar in composition.bars:
+            if bar.episode_num == episode_num:
+                bars.append(bar)
+        return bars

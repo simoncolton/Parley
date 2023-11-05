@@ -175,9 +175,11 @@ class VideoExporter:
         thumbnail_context = ImageDraw.Draw(overlay_thumbnail_image)
         long_score_context = ImageDraw.Draw(overlaid_long_score_image)
         colours = {"red": (255, 0, 0, 30), "green": (0, 255, 0, 30), "blue": (0, 0, 255, 30),
-                   "grey": (100, 100, 100, 30), "brown": (205, 150, 84, 30)}
+                   "grey": (100, 100, 100, 30), "brown": (205, 150, 84, 30), "yellow": (255, 255, 0),
+                   "purple": (128, 0, 128), "orange": (255, 165, 0)}
         thumb_colours = {"red": (255, 0, 0, 100), "green": (0, 255, 0, 100), "blue": (0, 0, 255, 100),
-                         "grey": (100, 100, 100, 100), "brown": (205, 150, 84, 100)}
+                         "grey": (100, 100, 100, 100), "brown": (205, 150, 84, 100), "yellow": (255, 255, 0, 100),
+                         "purple": (128, 0, 128, 100), "orange": (255, 165, 0, 100)}
         previous_bottom = 0
         bars_with_comments = [b for b in bars if b.margin_comments is not None and len(b.margin_comments) > 0]
         multi_comments_hash = {}
