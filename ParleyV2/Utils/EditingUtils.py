@@ -2,6 +2,7 @@ from ParleyV2.Utils.ExtractionUtils import *
 from ParleyV2.Utils.DiscordancyUtils import *
 from ParleyV2.Utils.TimingUtils import *
 from ParleyV2.Utils.MusicUtils import *
+import copy
 
 
 class EditingUtils:
@@ -43,6 +44,49 @@ class EditingUtils:
                     tie_type = track_notes[ind].tie_type
                     ind += 1
 
+    def get_excerpts_composition(self, composition, previous_bar, altered_bars):
+      excerpts_composition = copy.deepcopy(composition)
+      excerpts_composition.bars = []
+      excerpts_composition.bars_hash = {}
+      if previous_bar is not None:
+        for note_sequence in previous_bar.note_sequences:
+          if note_sequence.notes[0].tie_type == "mid":
+            note_sequence.notes[0].tie_type = "start"
+          if note_sequence.notes[0].tie_type == "end":
+            note_sequence.notes[0].tie_type = None
+
+      for ind, altered_bar in enumerate(altered_bars):
+        for note_sequence in altered_bar.note_sequences:
+          if previous_bar is None:
+            if note_sequence.notes[0].tie_type == "mid":
+              note_sequence.notes[0].tie_type = "start"
+            if note_sequence.notes[0].tie_type == "end":
+              note_sequence.notes[0].tie_type = None
+          if note_sequence.notes[-1].tie_type == "mid":
+            note_sequence.notes[-1].tie_type = "end"
+          if note_sequence.notes[-1].tie_type == "start":
+            note_sequence.notes[-1].tie_type = None
+        if previous_bar is not None:
+          excerpts_composition.bars.append(copy.deepcopy(previous_bar))
+          excerpts_composition.bars.append(altered_bar)
+        else:
+          excerpts_composition.bars.append(altered_bar)
+      tick = 0
+      start64th = 0
+      composition.bars
+      for ind, bar in enumerate(excerpts_composition.bars):
+        bar.start64th = start64th
+        bar.start_tick = tick
+        bar.end_tick = tick + bar.duration_ticks
+        bar.bar_num = ind + 1
+        excerpts_composition.bars_hash[bar.bar_num] = bar
+        for note_sequence in bar.note_sequences:
+          note_sequence.bar_num = bar.bar_num
+          for note in note_sequence.notes:
+            note.bar_num = bar.bar_num
+        tick += bar.duration_ticks
+        start64th += 16
+      return excerpts_composition
 
 
 
