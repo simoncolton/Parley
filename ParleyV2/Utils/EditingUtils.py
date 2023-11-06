@@ -44,7 +44,7 @@ class EditingUtils:
                     tie_type = track_notes[ind].tie_type
                     ind += 1
 
-    def get_excerpts_composition(self, composition, previous_bar, altered_bars):
+    def get_excerpts_composition(composition, previous_bar, altered_bars):
       excerpts_composition = copy.deepcopy(composition)
       excerpts_composition.bars = []
       excerpts_composition.bars_hash = {}
