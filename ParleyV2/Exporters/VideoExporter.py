@@ -199,7 +199,7 @@ class VideoExporter:
                         else:
                             break
                     if len(bar_set) > 1:
-                        multi_comment = f"bars {bar_set[0].bar_num}"
+                        multi_comment = f"{bar_set[0].bar_num}"
                         for ind in range(1, len(bar_set) - 1):
                             multi_comment += f", {bar_set[ind].bar_num}"
                         multi_comment += f" and {bar_set[-1].bar_num}: {comment.comment_text}"
@@ -218,7 +218,7 @@ class VideoExporter:
                 long_score_context.rectangle(rect, fill)
                 while y - 10 <= previous_bottom:
                     y += 1
-                score_note = f"bar {bar.bar_num}: {sn.comment_text}"
+                score_note = f"{bar.bar_num}: {sn.comment_text}"
                 key = f"{bar.bar_num}_{sn.comment_text}"
                 if key in multi_comments_hash:
                     score_note = multi_comments_hash[key]
