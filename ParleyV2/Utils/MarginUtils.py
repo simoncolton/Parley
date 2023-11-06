@@ -7,6 +7,9 @@ class MarginUtils:
         for c in bar.margin_comments:
             if c.comment_text == text and c.comment_colour == colour:
                 return
+            if c.comment_colour == colour:
+                c.comment_text = f"{c.comment_text}/{text}"
+                return
         bar.margin_comments.append(MarginComment(text, colour))
 
     def has_comment(bar, text):
