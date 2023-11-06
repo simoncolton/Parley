@@ -73,7 +73,6 @@ class EditingUtils:
           excerpts_composition.bars.append(altered_bar)
       tick = 0
       start64th = 0
-      composition.bars
       for ind, bar in enumerate(excerpts_composition.bars):
         bar.start64th = start64th
         bar.start_tick = tick
