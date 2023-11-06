@@ -38,6 +38,15 @@ class TimingUtils:
                 directly_following_notes.append(other_note)
         return directly_following_notes
 
+    def get_overlapping_notes(note, composition):
+        overlapping_notes = []
+        track_num = composition.note_sequences_hash[note.note_sequence_num].track_num
+        for other_note in ExtractionUtils.get_notes_in_composition(composition):
+            if other_note != note:
+                if TimingUtils.get_note_overlap_duration64ths(note, other_note) > 0:
+                    overlapping_notes.append(other_note)
+        return overlapping_notes
+
     def get_note_overlap_duration64ths(note1, note2):
         range1 = range(note1.timing.start64th, note1.timing.start64th + note1.timing.duration64ths)
         range2 = range(note2.timing.start64th, note2.timing.start64th + note2.timing.duration64ths)
