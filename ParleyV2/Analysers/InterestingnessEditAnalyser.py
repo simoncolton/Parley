@@ -29,7 +29,7 @@ class InterestingnessEditAnalyser:
             for i in range(0, min(len(pairs), num_highlight_bars_per_episode)):
                 note_sequence = pairs[i][1]
                 bar = composition.bars_hash[note_sequence.bar_num]
-                MarginUtils.add_margin_comment(bar, "Most likely", "green")
+                MarginUtils.add_margin_comment(bar, "Most likely", "likelihood")
         return composition
 
     def get_bar_score(self, note_sequence):

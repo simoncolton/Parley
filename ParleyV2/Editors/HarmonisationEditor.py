@@ -67,6 +67,7 @@ class HarmonisationEditor:
         new_note = copy.deepcopy(note)
         new_note.pitch = None
         new_note.note_sequence_num = note_sequence_num
+        new_note.tags = {}
 
         directly_preceding_notes = TimingUtils.get_directly_preceding_notes(new_note, 3, composition)
         directly_following_notes = TimingUtils.get_directly_following_notes(new_note, 3, composition)
@@ -109,7 +110,8 @@ class HarmonisationEditor:
                 if not is_ok:
                     new_note.pitch = None
                 else:
-                    new_note.score_colour = "orange"
                     break
+        if new_note.pitch is not None:
+            new_note.tags["harmony"] = "added"
 
         return new_note

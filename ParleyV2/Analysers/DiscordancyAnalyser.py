@@ -19,14 +19,18 @@ class DiscordancyAnalyser:
                         clang, grind = DiscordancyUtils.get_discordancies_for_note(composition, note, bar)
                         has_clang = has_clang or clang is not None
                         has_grind = has_grind or grind is not None
-                        if clang is not None or grind is not None:
-                            note.score_colour = "red"
+                        disc = "none"
+                        if has_clang:
+                            disc = "clang and grind" if has_grind else "clang"
+                        elif has_grind:
+                            disc = "grind"
+                        note.tags["discordance"] = disc
             if has_clang and has_grind:
-                MarginUtils.add_margin_comment(bar, "Clang and grind!!", "red")
+                MarginUtils.add_margin_comment(bar, "Clang and grind!!", "discordance")
             elif has_clang:
-                MarginUtils.add_margin_comment(bar, "Clang!", "red")
+                MarginUtils.add_margin_comment(bar, "Clang!", "discordance")
             elif has_grind:
-                MarginUtils.add_margin_comment(bar, "Grind...", "red")
+                MarginUtils.add_margin_comment(bar, "Grind...", "discordance")
 
         return composition
 

@@ -32,14 +32,12 @@ class DiscordancyEditor:
                                             if note.pitch != previous_note_pitch and MusicUtils.note_is_in_scale(note.pitch, scale):
                                                 clang, grind = DiscordancyUtils.get_discordancies_for_note(composition, note, bar)
                                                 if clang is None and grind is None:
-                                                    note.score_colour = "orange"
                                                     has_found = True
                                                     break
                                             note.pitch = original_pitch - a
                                             if note.pitch != previous_note_pitch and MusicUtils.note_is_in_scale(note.pitch, scale):
                                                 clang, grind = DiscordancyUtils.get_discordancies_for_note(composition, note, bar)
                                                 if clang is None and grind is None:
-                                                    note.score_colour = "orange"
                                                     has_found = True
                                                     break
                                     if not has_found:

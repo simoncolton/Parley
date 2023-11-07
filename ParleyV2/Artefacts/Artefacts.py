@@ -103,7 +103,6 @@ class Note:
     note_type: str = None
     tie_type: str = None
     beam_type: str = None
-    score_colour: str = None
     sorted_pitch_classes: [] = None
     chord_num: int = None
     note_sequence_num: int = None
@@ -111,9 +110,10 @@ class Note:
     track_note_num: int = None
     episode_track_note_num: int = None
     pause_64ths: int = None
+    tags: {} = None
 
 
 @dataclass
 class MarginComment:
     comment_text: str = None
-    comment_colour: str = None
+    comment_type: str = None

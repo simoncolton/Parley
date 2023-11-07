@@ -194,6 +194,21 @@ class Flaneur:
         ]
 
         lead_sheet_generator_spec = ParameterisedSpecification(lead_sheet_generator_params)
+        note_colours_hash = {
+            "harmony=added": "grey",
+            "likelihood=unchanged": "blue",
+            "likelihood=more likely": "green",
+            "likelihood=less likely": "purple",
+            "discordance=clang": "red",
+            "discordance=grind": "red",
+            "discordance=clang and grind": "red"
+        }
+
+        margin_colours_hash = {
+            "discordance": "yellow",
+            "likelihood": "blue",
+            "tuplet": "orange"
+        }
 
         total_exporter_params = [
             Parameter("applier_class_name", "TotalExporter"),
@@ -207,6 +222,8 @@ class Flaneur:
             Parameter("show_chord_name", True),
             Parameter("show_episode_duration", True),
             Parameter("show_colours", True),
+            Parameter("note_colours_hash", note_colours_hash),
+            Parameter("margin_colours_hash", margin_colours_hash),
             Parameter("soundfont_filepath", soundfont_filepath),
             Parameter("fluidsynth_cli", "fluidsynth"),
             Parameter("musescore_cli", "/Applications/MuseScore\ 3.app/Contents/MacOS/mscore"),
@@ -580,9 +597,7 @@ class Flaneur:
         specs_to_apply_param.append(chord_fifth_backbone_note_sequence_spec)
         specs_to_apply_param.append(vl_melody_spec)
         specs_to_apply_param.append(melody_passing_notes_spec)
-        specs_to_apply_param.append(listening_edit_spec)
         specs_to_apply_param.append(pre_edit_exporter_spec)
-        """
         specs_to_apply_param.append(vl_melody_interestingness_edit_spec)
         specs_to_apply_param.append(bass_interestingness_edit_spec)
         specs_to_apply_param.append(chord_tonic_interestingness_edit_spec)
@@ -601,7 +616,6 @@ class Flaneur:
         specs_to_apply_param.append(awkward_rhythm_editor_spec)
         specs_to_apply_param.append(pause_editor_spec)
         specs_to_apply_param.append(harmonised_exporter_spec)
-        """
 
         composition_params = [
             Parameter("applier_class_name", "CompositionGenerator"),

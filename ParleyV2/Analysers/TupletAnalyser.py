@@ -15,6 +15,6 @@ class TupletAnalyser:
         for note in notes:
             if note.timing.tuplet_length == 6:
                 bar = composition.bars_hash[note.bar_num]
-                MarginUtils.add_margin_comment(bar, "Sextuplet", "brown")
+                MarginUtils.add_margin_comment(bar, "Sextuplet", "tuplet")
         return composition
 

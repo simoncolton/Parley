@@ -27,7 +27,7 @@ class BarVariationExtractor:
                     clean_note = copy.deepcopy(note)
                     note.note_sequence_num = note_sequence.note_sequence_num
                     note.bar_num = bar.bar_num
-                    clean_note.score_colour = None
+                    clean_note.tags = {}
                     note_sequence.notes.append(clean_note)
                     if note.pitch is not None:
                         total_num_notes += 1
@@ -47,7 +47,7 @@ class BarVariationExtractor:
                         if abs(pitch - note.pitch) <= 6 and pitch != note.pitch:
                             note.pitch = pitch
                             found_pitch = True
-                    note.score_colour = "orange"
+                    note.tags["variation"] = "varied"
                     num_changes_made += 1
                     notes_changed.append(note)
             bar.pc_change = int(round(100 * (num_changes_made/total_num_notes)))

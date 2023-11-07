@@ -40,7 +40,7 @@ class EditingUtils:
                 ind = track_notes.index(note) + 1
                 while tie_type != "start" and tie_type is not None and ind < len(track_notes):
                     track_notes[ind].pitch = note.pitch
-                    track_notes[ind].score_colour = note.score_colour
+                    track_notes[ind].tags = copy.deepcopy(note.tags)
                     tie_type = track_notes[ind].tie_type
                     ind += 1
 

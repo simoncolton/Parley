@@ -38,7 +38,7 @@ class InterestingnessEditor:
                     else:
                         all_notes_ind = all_notes.index(note)
                         note.pitch = all_notes[all_notes_ind - 1].pitch
-                        note.score_colour = all_notes[all_notes_ind - 1].score_colour
+                        note.tags["likelihood"] = all_notes[all_notes_ind - 1].tags["likelihood"]
 
     def update_note_pitch(self, composition, episode_notes, note):
         bar = composition.bars_hash[note.bar_num]
@@ -98,13 +98,12 @@ class InterestingnessEditor:
                                            note, episode_notes, new_pitch_class, ind, bar)
                     pos += 1
 
-            note.score_colour = "blue"
             if sorted_pitch_classes.index(current_pitch_class) < sorted_pitch_classes.index(new_pitch_class):
-                note.score_colour = "purple"
+                note.tags["likelihood"] = "unchanged"
             if sorted_pitch_classes.index(current_pitch_class) > sorted_pitch_classes.index(new_pitch_class):
-                note.score_colour = "green"
+                note.tags["likelihood"] = "more likely"
             if not is_ok:
-                note.score_colour = "red"
+                note.tags["likelihood"] = "less likely"
             note.sorted_pitch_classes = [int(i) for i in sorted_pitch_classes] # transform from numpy.int64 AAAAAAGGGGHHHH
 
     def set_pitch(self, composition, spec, pitch_repetition_allowed, chord_notes_fixed,

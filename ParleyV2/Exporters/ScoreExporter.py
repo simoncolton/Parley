@@ -162,6 +162,14 @@ class ScoreExporter:
             XMLUtils.add_child(self.doc, note_elem, "type", {}, rest_type)
             XMLUtils.add_child(self.doc, note_elem, "staff", {}, f"{staff_num}")
 
+    def get_score_colour(self, note):
+        colours_hash = self.export_spec.get_value("note_colours_hash")
+        for id in note.tags.keys():
+            key = id + "=" + note.tags[id]
+            if key in colours_hash:
+                return colours_hash[key]
+        return None
+
     def add_note(self, measure_elem, note, staff_num, add_chord_annotation):
         if self.export_spec.get_value("show_chord_name"):
             chord = self.composition.chords_hash[note.chord_num]
@@ -178,8 +186,11 @@ class ScoreExporter:
                 XMLUtils.add_child(self.doc, harmony_elem, "kind", {"halign": "center"}, c)
                 self.added_chord_nums.append(note.chord_num)
         note_attributes = {}
-        if self.export_spec.get_value("show_colours") and note.score_colour is not None:
-            note_attributes["color"] = note.score_colour
+
+        note_colour = self.get_score_colour(note)
+        if self.export_spec.get_value("show_colours") and note_colour is not None:
+            note_attributes["color"] = note_colour
+
         note_elem = XMLUtils.add_child(self.doc, measure_elem, "note", note_attributes)
 
         if add_chord_annotation:

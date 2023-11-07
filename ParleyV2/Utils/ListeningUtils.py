@@ -114,11 +114,11 @@ class ListeningUtils:
                 note.interestingness_profile[lead_up_type] = interestingness
                 if add_colour and not (note.tie_type is None or note.tie_type == "start"):
                     if interestingness == 12:
-                        note.score_colour = "red"
+                        note.tags["interestingness"] = "high"
                     elif interestingness >= 9:
-                        note.score_colour = "orange"
+                        note.tags["interestingness"] = "mid"
                     elif interestingness <= 4:
-                        note.score_colour = "green"
+                        note.tags["interestingness"] = "low"
 
     def calculate_bar_interestingness_profiles(composition, interestingness_type):
         for ep_num, episode in enumerate(composition.form.episodes):

@@ -34,7 +34,7 @@ class BackboneMelodyGenerator:
         for t in timings:
             note = Note(pitch=72, volume=100, note_type="backbone",
                         timing=t, note_sequence_num=note_sequence.note_sequence_num,
-                        bar_num=note_sequence.bar_num,track_note_num=None)
+                        bar_num=note_sequence.bar_num, track_note_num=None, tags={})
             note_sequence.notes.append(note)
         previous_pitch = None if previous_note_sequence is None else previous_note_sequence.notes[-1].pitch
         allows_in_bar_repetition = spec["in_bar_repetition"]

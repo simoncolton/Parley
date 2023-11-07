@@ -175,8 +175,8 @@ class VideoExporter:
         thumbnail_context = ImageDraw.Draw(overlay_thumbnail_image)
         long_score_context = ImageDraw.Draw(overlaid_long_score_image)
         colours = {"red": (255, 0, 0, 30), "green": (0, 255, 0, 30), "blue": (0, 0, 255, 30),
-                   "grey": (100, 100, 100, 30), "brown": (205, 150, 84, 30), "yellow": (255, 255, 0),
-                   "purple": (128, 0, 128), "orange": (255, 165, 0)}
+                   "grey": (100, 100, 100, 30), "brown": (205, 150, 84, 30), "yellow": (255, 255, 0, 30),
+                   "purple": (128, 0, 128, 30), "orange": (255, 165, 0, 30)}
         thumb_colours = {"red": (255, 0, 0, 100), "green": (0, 255, 0, 100), "blue": (0, 0, 255, 100),
                          "grey": (100, 100, 100, 100), "brown": (205, 150, 84, 100), "yellow": (255, 255, 0, 100),
                          "purple": (128, 0, 128, 100), "orange": (255, 165, 0, 100)}
@@ -209,8 +209,9 @@ class VideoExporter:
 
         for bar in bars_with_comments:
             for sn in bar.margin_comments:
-                fill = colours[sn.comment_colour]
-                tag_fill = thumb_colours[sn.comment_colour]
+                comment_colour = self.get_comment_colour(sn)
+                fill = colours[comment_colour]
+                tag_fill = thumb_colours[comment_colour]
                 bar_box = bar_boxes[bar.bar_num - 1].scale_to_image(score_images[0])
                 y = bar_box.y1 + (bar_box.page_num * score_images[0].size[1])
                 y2 = bar_box.y2 + (bar_box.page_num * score_images[0].size[1])
@@ -238,6 +239,13 @@ class VideoExporter:
         final_long_score_image = Image.alpha_composite(long_score_image, overlaid_long_score_image)
         final_tagged_thumbnail_image = Image.alpha_composite(wide_thumbnail_image, overlay_thumbnail_image)
         return final_sidebar_image, final_long_score_image, final_tagged_thumbnail_image
+
+    def get_comment_colour(self, comment):
+        colours_hash = self.export_spec.get_value("margin_colours_hash")
+        if comment.comment_type not in colours_hash:
+            return None
+        else:
+            return colours_hash[comment.comment_type]
 
     def get_fade_in_frame(self, trans_prop, image):
         transparency = int(round((1 - (trans_prop * 2)) * 255))
