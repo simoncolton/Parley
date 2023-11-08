@@ -23,6 +23,7 @@ class Scale:
     pitch_classes: [] = None
     tonic_letter: str = None
     scale_type: str = None
+    key_sig: int = None
 
 
 @dataclass

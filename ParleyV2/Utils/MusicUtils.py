@@ -1,6 +1,7 @@
 import random
 from ParleyV2.Logistics.Constants import *
 from ParleyV2.Artefacts.Artefacts import *
+from ParleyV2.Utils.ExtractionUtils import *
 
 
 class MusicUtils:
@@ -28,8 +29,11 @@ class MusicUtils:
             for chord_type in Constants.chord_types_hash.keys():
                 intervals = Constants.chord_types_hash[chord_type]
                 if t2 - t1 == intervals[0] and t3 - t2 == intervals[1]:
-                    chord_name = Constants.note_letters[MusicUtils.pitch_class(t1)] + "_" + chord_type
-                    return chord_name
+                    pitch_class = MusicUtils.pitch_class(t1)
+                    if pitch_class in Constants.sharp_note_letters:
+                        return Constants.sharp_note_letters[pitch_class] + "_" + chord_type
+                    else:
+                        return Constants.flat_note_letters[pitch_class] + "_" + chord_type
         return None
 
     def get_pitches_for_base_chord_in_scale(scale_name):
@@ -217,28 +221,37 @@ class MusicUtils:
             dist += 1
         return pitch
 
+
     def get_named_scale(scale_name):
         scale = Scale()
         scale.tonic_letter = scale_name.split("_")[0]
         scale.scale_type = scale_name.split("_")[1]
         intervals = Constants.scales_hash[scale.scale_type]
-        tonic_pitch_class = Constants.note_letters.index(scale.tonic_letter)
+        if scale.tonic_letter in Constants.sharp_note_letters:
+            tonic_pitch_class = Constants.sharp_note_letters.index(scale.tonic_letter)
+        else:
+            tonic_pitch_class = Constants.flat_note_letters.index(scale.tonic_letter)
         scale.pitch_classes = [(tonic_pitch_class + pos) % 12 for pos in intervals]
         scale.pitch_classes.sort()
+        scale.key_sig = MusicUtils.get_closest_key_sig_for_scale(scale)
+#        scale.tonic_letter = MusicUtils.get_tonic_letter_for_scale(scale)
         return scale
 
     def get_random_scale(chord_type_allowance=None):
+        tonics_to_choose_from = ["c", "c♯", "d", "e♭", "e", "f", "f♯", "g", "a♭", "a", "a♭", "b♭"]
         scale = Scale()
-        scale.tonic_letter = random.choice(Constants.note_letters)
+        scale.tonic_letter = random.choice(tonics_to_choose_from)
+        tonic_pitch_class = tonics_to_choose_from.index(scale.tonic_letter)
         scale.scale_type = random.choice(list(Constants.scales_hash.keys()))
         intervals = Constants.scales_hash[scale.scale_type]
-        tonic_pitch_class = Constants.note_letters.index(scale.tonic_letter)
         scale.pitch_classes = [(tonic_pitch_class + pos) % 12 for pos in intervals]
         scale.pitch_classes.sort()
+        scale.key_sig = MusicUtils.get_closest_key_sig_for_scale(scale)
         if chord_type_allowance is not None:
             chords = MusicUtils.chords_satisfying_chord_type_allowance(scale, chord_type_allowance)
             if len(chords) == 0:
                 return MusicUtils.get_random_scale(chord_type_allowance)
+        ("SCALE", scale)
         return scale
 
     def chords_satisfying_chord_type_allowance(scale, chord_type_allowance):
@@ -250,7 +263,10 @@ class MusicUtils:
                 third = (tonic + interval1) % 12
                 fifth = (third + interval2) % 12
                 if third in scale.pitch_classes and fifth in scale.pitch_classes:
-                    chord_name = Constants.note_letters[tonic] + chord_type
+                    if tonic in Constants.sharp_note_letters:
+                        chord_name = Constants.sharp_note_letters[tonic] + chord_type
+                    else:
+                        chord_name = Constants.flat_note_letters[tonic] + chord_type
                     if not chord_name in chord_names:
                         chord_names.append(chord_name)
                         chord = Chord([tonic, third, fifth], scale.tonic_letter + "_" + scale.scale_type, chord_name)
@@ -316,3 +332,19 @@ class MusicUtils:
         pitches_in_scale = MusicUtils.get_pitches_in_scale(scale)
         base_ind = pitches_in_scale.index(base_pitch)
         return pitches_in_scale[base_ind + scale_interval]
+
+    def get_closest_key_sig_for_scale(scale):
+        key_sig_hash = {0: []}
+        sharps = [6, 1, 8, 3, 10, 5, 0]
+        flats = [10, 3, 8, 1, 6, 11, 4]
+        sharp_pos = 0
+        while sharps[sharp_pos] in scale.pitch_classes and sharp_pos < len(sharps):
+            sharp_pos += 1
+        flat_pos = 0
+        while flats[flat_pos] in scale.pitch_classes and flat_pos < len(flats):
+            flat_pos += 1
+        if "♯" in scale.tonic_letter:
+            return sharp_pos
+        elif "♭" in scale.tonic_letter:
+            return -flat_pos
+        return sharp_pos if sharp_pos > flat_pos else -flat_pos

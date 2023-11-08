@@ -14,11 +14,12 @@ class ScoreExporter:
         self.export_spec = export_spec
         self.doc = None
         self.root = None
-        self.letters = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
         self.note_types_hash = {64: "whole", 32: "half", 16: "quarter", 8: "eighth",
                                 4: "16th", 2: "32nd", 1: "64th"}
         self.added_chord_nums = []
         self.current_bar_directions = None
+        self.scale = export_spec.get_value("scale")
+        self.uses_flats = self.scale.key_sig < 0
 
     def apply(self, start_composition):
         composition = copy.deepcopy(start_composition)
@@ -82,6 +83,11 @@ class ScoreExporter:
             time_elem = XMLUtils.add_child(self.doc, attributes_elem, "time")
             XMLUtils.add_child(self.doc, time_elem, "beats", {}, "4")
             XMLUtils.add_child(self.doc, time_elem, "beat-type", {}, "4")
+            key_elem = XMLUtils.add_child(self.doc, attributes_elem, "key")
+            scale = self.export_spec.get_value("scale")
+            key_sig_num = MusicUtils.get_closest_key_sig_for_scale(scale)
+            XMLUtils.add_child(self.doc, key_elem, "fifths", {}, f"{key_sig_num}")
+            XMLUtils.add_child(self.doc, key_elem, "mode", {}, "major")
             clefs = [clef for (clef, _) in part_spec["track_details"]]
             XMLUtils.add_child(self.doc, attributes_elem, "staves", {}, f"{len(clefs)}")
             for ind, clef in enumerate(clefs):
@@ -188,9 +194,11 @@ class ScoreExporter:
                 harmony_elem = XMLUtils.add_child(self.doc, measure_elem, "harmony", {"color": "green"})
                 root_elem = XMLUtils.add_child(self.doc, harmony_elem, "root")
                 letter = chord_name.split("_")[0]
-                XMLUtils.add_child(self.doc, root_elem, "root-step", {}, letter)
-                if "#" in letter:
+                XMLUtils.add_child(self.doc, root_elem, "root-step", {}, letter[0:1].capitalize())
+                if "♯" in letter:
                     XMLUtils.add_child(self.doc, root_elem, "root-alter", {}, "1")
+                elif "♭" in letter:
+                    XMLUtils.add_child(self.doc, root_elem, "root-alter", {}, "-1")
                 chord_type = chord_name.split("_")[1]
                 c = chord_type
                 XMLUtils.add_child(self.doc, harmony_elem, "kind", {"halign": "center"}, c)
@@ -208,11 +216,14 @@ class ScoreExporter:
         pitch_elem = XMLUtils.add_child(self.doc, note_elem, "pitch")
         pitch_class = MusicUtils.pitch_class(note.pitch)
         octave = MusicUtils.get_octave(note.pitch)
-        letter = self.letters[pitch_class]
+        whole_letter = Constants.flat_note_letters[pitch_class] if self.uses_flats else Constants.sharp_note_letters[pitch_class]
+        letter = whole_letter[0:1]
+        letter = letter.capitalize()
         XMLUtils.add_child(self.doc, pitch_elem, "step", {}, letter[0])
         XMLUtils.add_child(self.doc, pitch_elem, "octave", {}, f"{octave}")
-        if len(letter) == 2:
-            XMLUtils.add_child(self.doc, pitch_elem, "alter", {}, "1")
+        if len(whole_letter) == 2:
+            alter_offset = "-1" if self.uses_flats else "1"
+            XMLUtils.add_child(self.doc, pitch_elem, "alter", {}, alter_offset)
 
         num_fracs, num_dots = RhythmUtils.get_note_quantization_split(note.timing.duration64ths)[0]
         note_type = self.note_types_hash[num_fracs]
@@ -255,12 +266,12 @@ class ScoreExporter:
                     beam_type = "start"
                 elif note.timing.tuplet_note_type == "end":
                     beam_type = "stop"
-                #TODO GET EFFING BEAMS RIGHT!
+                #TODO GET BEAMS RIGHT!
                 #XMLUtils.add_child(self.doc, note_elem, "beam", {"number": "2"}, beam_type)
         else:
             note_sequence = self.composition.note_sequences_hash[note.note_sequence_num]
             #beam_type = "begin" if note_sequence.notes.index(note) == 0 else "continue"
-            # TODO GET EFFING BEAMS RIGHT!
+            # TODO GET BEAMS RIGHT!
 
             #XMLUtils.add_child(self.doc, note_elem, "beam", {"number": "1"}, beam_type)
             #XMLUtils.add_child(self.doc, note_elem, "beam", {"number": "0"}, "default")

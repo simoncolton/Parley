@@ -8,7 +8,8 @@ class Constants:
         "dim": [3, 3]
     }
 
-    note_letters = ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"]
+    sharp_note_letters = ["c", "c♯", "d", "d♯", "e", "f", "f♯", "g", "g♯", "a", "a♯", "b"]
+    flat_note_letters = ["c", "d♭", "d", "e♭", "e", "f", "g♭", "g", "a♭", "a", "b♭", "b"]
 
     # From: https://en.wikipedia.org/wiki/List_of_musical_scales_and_modes
     scales_hash = {

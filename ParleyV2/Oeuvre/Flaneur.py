@@ -19,7 +19,7 @@ class Flaneur:
     def get_composition_gen_spec(self):
 
         random_seed = random.randint(0, 100000)
-        #random_seed = 55649
+        #random_seed = 37822
 
         print("Random seed:", random_seed)
 
@@ -70,16 +70,24 @@ class Flaneur:
         while len(MusicUtils.get_chords_for_scale(scaleA, epB_chord_allowances, 70)) == 0:
             scaleA = MusicUtils.get_random_scale(epA_chord_allowances)
 
+        # Need to use these characters: ♭ and ♯
+        #scaleA = MusicUtils.get_named_scale("c_minor")
+
         scaleB = scaleA
 
         home_chordA = random.choice(MusicUtils.get_chords_for_scale(scaleA, epA_chord_allowances, 70))
         home_chordB = random.choice(MusicUtils.get_chords_for_scale(scaleB, epB_chord_allowances, 70))
 
         st = ""
+        title = "Flaneur"
         for s in scaleA.scale_type.split(" "):
             st += s.capitalize() + " "
-        scale_subtitle = "In the " + st + "Scale of " + scaleA.tonic_letter.capitalize()
-        print("Flaneur", scale_subtitle)
+        st = st[:-1]
+        scale_subtitle = "In the " + st + " Scale of " + scaleA.tonic_letter.capitalize()
+        if st == "Major" or st == "Minor":
+            scale_subtitle = ""
+            title = f"Flaneur in {scaleA.tonic_letter.capitalize()} {st}"
+        print(title, scale_subtitle)
 
         discordancy_spec_params = [
             Parameter("max_clang_severity", 0),
@@ -87,7 +95,6 @@ class Flaneur:
             Parameter("max_grind_severity", 0),
             Parameter("max_grind_duration_ms", 0)
         ]
-
 
         discordancy_spec_params = [
             Parameter("max_clang_severity", None),
@@ -220,6 +227,7 @@ class Flaneur:
             Parameter("export_data", True),
             Parameter("output_stem", None),
             Parameter("score_parts", None),
+            Parameter("scale", scaleA),
             Parameter("show_chord_name", True),
             Parameter("show_episode_duration", True),
             Parameter("show_colours", True),
@@ -593,7 +601,7 @@ class Flaneur:
         specs_to_apply_param.append(form_spec)
         specs_to_apply_param.append(chord_sequence_spec)
         specs_to_apply_param.append(lead_sheet_generator_spec)
-#        specs_to_apply_param.append(lead_sheet_exporter_spec)
+        specs_to_apply_param.append(lead_sheet_exporter_spec)
         specs_to_apply_param.append(bass_backbone_note_sequence_spec)
         specs_to_apply_param.append(chord_tonic_backbone_note_sequence_spec)
         specs_to_apply_param.append(chord_third_backbone_note_sequence_spec)
@@ -625,7 +633,7 @@ class Flaneur:
         composition_params = [
             Parameter("applier_class_name", "CompositionGenerator"),
             Parameter("output_composition_id", "final_composition"),
-            Parameter("title", "Flaneur"),
+            Parameter("title", title),
             Parameter("random_seed", random_seed),
             Parameter("subtitle", scale_subtitle),
             Parameter("random_seed", random_seed),
