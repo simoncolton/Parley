@@ -19,7 +19,7 @@ class Flaneur:
     def get_composition_gen_spec(self):
 
         random_seed = random.randint(0, 100000)
-        random_seed = 55649
+        #random_seed = 55649
 
         print("Random seed:", random_seed)
 
@@ -125,7 +125,7 @@ class Flaneur:
         fixed_scale_param.add_constrained_value("epB_scale", "efi=B")
 
         output_stem = f"{self.output_dir}/flaneur_{random_seed}"
-        num_minutes = 3
+        num_minutes = 2
 
         bar_start_duration_ms_param = Parameter("bar_start_duration_ms")
         bar_start_duration_ms_param.add_constrained_value(3000, "efi=A")
@@ -230,7 +230,7 @@ class Flaneur:
             Parameter("musescore_cli", "/Applications/MuseScore\ 3.app/Contents/MacOS/mscore"),
             Parameter("resources_dir", "/Users/Simon/Dropbox/Code/Parley/ParleyV2/Resources"),
             Parameter("ffmpeg_cli", "ffmpeg"),
-            Parameter("codec", "libx265"),
+            Parameter("codec", "libx264"),
             Parameter("audio_formats", ["WAV", "MP3"]),
             Parameter("video_fade_in", False),
             Parameter("dpi", 100),
@@ -600,7 +600,7 @@ class Flaneur:
         specs_to_apply_param.append(chord_fifth_backbone_note_sequence_spec)
         specs_to_apply_param.append(vl_melody_spec)
         specs_to_apply_param.append(melody_passing_notes_spec)
-        specs_to_apply_param.append(pre_edit_exporter_spec)
+        #specs_to_apply_param.append(pre_edit_exporter_spec)
         """
         specs_to_apply_param.append(vl_melody_interestingness_edit_spec)
         specs_to_apply_param.append(bass_interestingness_edit_spec)
@@ -613,7 +613,7 @@ class Flaneur:
         specs_to_apply_param.append(melody_repetition_editor_spec)
         specs_to_apply_param.append(melody_tuplets_spec)
         specs_to_apply_param.append(bass_tuplets_spec)
-        specs_to_apply_param.append(post_edit_exporter_spec)
+        #specs_to_apply_param.append(post_edit_exporter_spec)
         specs_to_apply_param.append(harmonisation_edit_spec)
         specs_to_apply_param.append(interestingness_edit_analyser_spec)
         specs_to_apply_param.append(discordancy_analyser_spec)

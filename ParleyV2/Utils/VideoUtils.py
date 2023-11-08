@@ -8,8 +8,8 @@ class VideoUtils:
 #        parts = [ffmpeg_cli, '-hide_banner', '-loglevel', 'error', '-y', '-f', 'image2pipe', '-vcodec', 'mjpeg', '-r', fps_s, '-i', '-', '-vcodec', 'mpeg4',
 #                   '-qscale', '5', '-r', fps_s, output_file_path]
 
-        parts = [ffmpeg_cli, '-hide_banner', '-loglevel', 'error', '-y', '-f', 'image2pipe', '-pix_fmt', 'yuv420p',
-                 '-vcodec', 'mjpeg', '-r', fps_s, '-i', '-', '-vcodec', codec,
+        parts = [ffmpeg_cli, '-hide_banner', '-loglevel', 'error', '-y', '-f', 'image2pipe',
+                 '-vcodec', 'mjpeg', '-r', fps_s, '-i', '-', '-vcodec', codec, '-crf', '28',
                  '-qscale', '5', '-r', fps_s, output_file_path]
 
         return Popen(parts, stdin=PIPE)

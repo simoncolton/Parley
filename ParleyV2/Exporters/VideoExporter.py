@@ -252,7 +252,7 @@ class VideoExporter:
         for bar in pedal_on_bars:
             bar_box = bar_boxes[bar.bar_num - 1].scale_to_image(score_images[0])
             y2 = bar_box.y2 + (bar_box.page_num * score_images[0].size[1])
-            long_score_image.paste(pedal_on_image, (bar_box.x1 + 20, y2 + 15, bar_box.x1 + 45, y2 + 30), None)
+            long_score_image.paste(pedal_on_image, (bar_box.x1 + 10, y2 + 15, bar_box.x1 + 35, y2 + 30), None)
         for bar in pedal_off_bars:
             bar_box = bar_boxes[bar.bar_num - 1].scale_to_image(score_images[0])
             y2 = bar_box.y2 + (bar_box.page_num * score_images[0].size[1])
