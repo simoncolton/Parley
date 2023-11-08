@@ -58,7 +58,7 @@ class ScoreExporter:
         for bar in composition.bars:
             is_start_of_episode = bar.episode_bar_num == 1
             episode_num = bar.episode_num
-            measure_elem = self.add_measure(part_spec, part_ind, bar_ind, part_elem, bar, is_start_of_episode,
+            measure_elem = self.add_measure(composition, part_spec, part_ind, bar_ind, part_elem, bar, is_start_of_episode,
                                             episode_num, f"Episode {episode_num}")
             for staff_num, (clef, track_nums) in enumerate(part_spec["track_details"]):
                 if staff_num > 0:
@@ -72,10 +72,11 @@ class ScoreExporter:
 
             bar_ind += 1
 
-    def add_measure(self, part_spec, part_ind, measure_ind, part_elem, bar,
+    def add_measure(self, composition, part_spec, part_ind, measure_ind, part_elem, bar,
                     is_start_of_episode, episode_num, episode_title):
         measure_attributes = {"number": f"{measure_ind}"}
         measure_elem = XMLUtils.add_child(self.doc, part_elem, "measure", measure_attributes)
+
         attributes_elem = XMLUtils.add_child(self.doc, measure_elem, "attributes")
         if measure_ind == 1:
             time_elem = XMLUtils.add_child(self.doc, attributes_elem, "time")
@@ -116,6 +117,15 @@ class ScoreExporter:
             dynamics_elem = XMLUtils.add_child(self.doc, direction_type_elem, "dynamics", {"halign": "left"})
             XMLUtils.add_child(self.doc, dynamics_elem, bar.directions)
             self.current_bar_directions = bar.directions
+
+        """
+        CAN'T GET PEDAL SIGNS TO BE PLACED BELOW THE STAVE!!!
+        pedal_direction_elem = XMLUtils.add_child(self.doc, measure_elem, "direction", {"placement": "below"})
+        direction_type_elem = XMLUtils.add_child(self.doc, pedal_direction_elem, "direction-type")
+        XMLUtils.add_child(self.doc, direction_type_elem, "pedal", {"type": "stop", "relative-y": "-90.00"})
+        XMLUtils.add_child(self.doc, pedal_direction_elem, "staff", {}, "2")
+        #XMLUtils.add_child(self.doc, pedal_direction_elem, "offset", {}, "-22")
+        """
 
         return measure_elem
 

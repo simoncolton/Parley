@@ -205,3 +205,32 @@ class TimingUtils:
                         bar.start_tick += extra
                         bar.end_tick += extra
                         bars_adjusted.append(bar)
+
+    def get_pedal_on_and_off_bars(composition, export_spec):
+        pedal_on_bars = []
+        pedal_off_bars = []
+        performance_spec = export_spec.get_value("performance_spec")
+        pedal_reset = performance_spec.get_value("sustain_pedal_reset")
+        if pedal_reset == "episode":
+            for ep_num in range(0, composition.num_episodes):
+                bars = ExtractionUtils.get_bars_for_episode_num(composition, ep_num + 1)
+                bar_num = 0
+                while bar_num < len(bars):
+                    bar = bars[bar_num]
+                    pspec = performance_spec.instantiate_me(composition, bar)
+                    if "sustain_pedal_bars" in pspec and pspec["sustain_pedal_bars"] is not None:
+                        sustain_pedal_bars = pspec["sustain_pedal_bars"]
+                        pedal_on_bars.append(bar)
+                        off_bar_num = bar_num + sustain_pedal_bars - 1
+                        if off_bar_num < len(bars):
+                            pedal_off_bars.append(bars[off_bar_num])
+                            bar_num += sustain_pedal_bars
+                        else:
+                            bar_num = len(bars)
+                            if bars[-1] not in pedal_off_bars:
+                                pedal_off_bars.append(bars[-1])
+                    else:
+                        bar_num += 1
+
+        return pedal_on_bars, pedal_off_bars
+

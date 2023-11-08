@@ -19,7 +19,7 @@ class Flaneur:
     def get_composition_gen_spec(self):
 
         random_seed = random.randint(0, 100000)
-        random_seed = 60161
+        #random_seed = 60161
 
         print("Random seed:", random_seed)
 
@@ -104,12 +104,13 @@ class Flaneur:
         reverb_param.add_constrained_value(0.6, "efi=B")
 
         sustain_pedal_bars_param = Parameter("sustain_pedal_bars")
-        sustain_pedal_bars_param.add_constrained_value(0, "efi=A")
-        sustain_pedal_bars_param.add_constrained_value(0, "efi=B")
+        sustain_pedal_bars_param.add_constrained_value(1, "efi=A")
+        sustain_pedal_bars_param.add_constrained_value(2, "efi=B")
 
         performance_params = [
             reverb_param,
-            sustain_pedal_bars_param
+            sustain_pedal_bars_param,
+            Parameter("sustain_pedal_reset", "episode")
         ]
 
         performance_spec = ParameterisedSpecification(performance_params)
@@ -227,6 +228,7 @@ class Flaneur:
             Parameter("soundfont_filepath", soundfont_filepath),
             Parameter("fluidsynth_cli", "fluidsynth"),
             Parameter("musescore_cli", "/Applications/MuseScore\ 3.app/Contents/MacOS/mscore"),
+            Parameter("resources_dir", "/Users/Simon/Dropbox/Code/Parley/ParleyV2/Resources"),
             Parameter("ffmpeg_cli", "ffmpeg"),
             Parameter("audio_formats", ["WAV", "MP3"]),
             Parameter("video_fade_in", False),
@@ -598,11 +600,13 @@ class Flaneur:
         specs_to_apply_param.append(vl_melody_spec)
         specs_to_apply_param.append(melody_passing_notes_spec)
         specs_to_apply_param.append(pre_edit_exporter_spec)
+        """
         specs_to_apply_param.append(vl_melody_interestingness_edit_spec)
         specs_to_apply_param.append(bass_interestingness_edit_spec)
         specs_to_apply_param.append(chord_tonic_interestingness_edit_spec)
         specs_to_apply_param.append(chord_third_interestingness_edit_spec)
         specs_to_apply_param.append(chord_fifth_interestingness_edit_spec)
+        """
         specs_to_apply_param.append(bass_passing_notes_spec)
         specs_to_apply_param.append(note_removal_editor)
         specs_to_apply_param.append(melody_repetition_editor_spec)

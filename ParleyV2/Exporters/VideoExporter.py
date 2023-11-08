@@ -1,5 +1,6 @@
 import copy
 
+from ParleyV2.Utils.TimingUtils import *
 from PIL import ImageDraw, Image, ImageFont
 from pdf2image import convert_from_path
 from ParleyV2.Utils.PDFUtils import *
@@ -30,7 +31,7 @@ class VideoExporter:
         page_width = score_images[0].size[0]
         page_height = score_images[0].size[1]
         score_height = sum([i.size[1] for i in score_images])
-        sidebar_width = int(round(page_height * 0.5))
+        sidebar_width = int(round(page_height * 0.75))
         last_bar_box = bar_boxes[-1].scale_to_image(score_images[-1])
         score_height = min(score_height, (last_bar_box.page_num * page_height) + last_bar_box.y2 + last_bar_box.height)
         score_height = int(round(score_height))
@@ -82,7 +83,7 @@ class VideoExporter:
         image_context = ImageDraw.Draw(image, 'RGBA')
         image_rect = ((0, 0), image_size)
         image_context.rectangle(image_rect, fill="white")
-        sidebar_image, overlaid_long_score_image, tagged_thumbnail_image = self.get_annotated_images(score_images,
+        sidebar_image, overlaid_long_score_image, tagged_thumbnail_image = self.get_annotated_images(composition, score_images,
                                                                                                      long_score_image,
                                                                                                      thumbnail_image,
                                                                                                      sidebar_width,
@@ -157,8 +158,10 @@ class VideoExporter:
         subprocess.run(f"rm {temp_mp4_output_file_path}", shell=True)
         return composition
 
-    def get_annotated_images(self, score_images, long_score_image, thumbnail_image, sidebar_width, bars, bar_boxes):
+    def get_annotated_images(self, composition, score_images, long_score_image, thumbnail_image, sidebar_width, bars, bar_boxes):
         font = ImageFont.truetype('Tahoma.ttf', 20)
+        pedal_font = ImageFont.truetype('Times New Roman Italic.ttf', 17)
+
         sidebar_height = long_score_image.size[1]
         sidebar_image = Image.new('RGBA', (sidebar_width, sidebar_height), (255, 255, 255, 255))
         sidebar_overlay_image = Image.new('RGBA', (sidebar_width, sidebar_height), (255, 255, 255, 0))
@@ -207,6 +210,8 @@ class VideoExporter:
                         ignore_set = [f"{b.bar_num}_{comment.comment_text}" for b in bar_set if b != bar]
                         ignore_comments.extend(ignore_set)
 
+        self.add_pedal_signs(long_score_image, bar_boxes, score_images, composition)
+
         for bar in bars_with_comments:
             for sn in bar.margin_comments:
                 comment_colour = self.get_comment_colour(sn)
@@ -230,7 +235,6 @@ class VideoExporter:
                     sidebar_overlay_context.rectangle(box, fill=fill)
                     thumbnail_tag_y_pos = int(round(y * thumbnail_y_mult))
                     rad = int(round(text_size[1] * thumbnail_y_mult))
-
                     tag_box = ((thumbnail_tag_x_pos, thumbnail_tag_y_pos),
                                (thumbnail_tag_x_pos + (rad * 3), thumbnail_tag_y_pos + rad))
                     thumbnail_context.rectangle(tag_box, fill=tag_fill)
@@ -239,6 +243,20 @@ class VideoExporter:
         final_long_score_image = Image.alpha_composite(long_score_image, overlaid_long_score_image)
         final_tagged_thumbnail_image = Image.alpha_composite(wide_thumbnail_image, overlay_thumbnail_image)
         return final_sidebar_image, final_long_score_image, final_tagged_thumbnail_image
+
+    def add_pedal_signs(self, long_score_image, bar_boxes, score_images, composition):
+        resources_dir = self.export_spec.get_value("resources_dir")
+        pedal_on_image = Image.open(resources_dir + "/pedal_on.png").resize((25, 15))
+        pedal_off_image = Image.open(resources_dir + "/pedal_off.png").resize((10, 10))
+        pedal_on_bars, pedal_off_bars = TimingUtils.get_pedal_on_and_off_bars(composition, self.export_spec)
+        for bar in pedal_on_bars:
+            bar_box = bar_boxes[bar.bar_num - 1].scale_to_image(score_images[0])
+            y2 = bar_box.y2 + (bar_box.page_num * score_images[0].size[1])
+            long_score_image.paste(pedal_on_image, (bar_box.x1 + 20, y2 + 15, bar_box.x1 + 45, y2 + 30), None)
+        for bar in pedal_off_bars:
+            bar_box = bar_boxes[bar.bar_num - 1].scale_to_image(score_images[0])
+            y2 = bar_box.y2 + (bar_box.page_num * score_images[0].size[1])
+            long_score_image.paste(pedal_off_image, (bar_box.x2 - 15, y2 + 15, bar_box.x2 - 5, y2 + 25), None)
 
     def get_comment_colour(self, comment):
         colours_hash = self.export_spec.get_value("margin_colours_hash")
