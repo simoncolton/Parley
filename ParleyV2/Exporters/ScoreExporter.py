@@ -105,10 +105,10 @@ class ScoreExporter:
             XMLUtils.add_child(self.doc, direction_type_elem, "rehearsal", rehearsal_attrs, ep_title)
 
         """
-        if self.score_gen_spec.show_bar_tag and part_ind == 0 and bar.score_tag is not None:
-            direction_elem = XMLUtils.add_child(self.doc, measure_elem, "direction", {"placement": "above"})
-            direction_type_elem = XMLUtils.add_child(self.doc, direction_elem, "direction-type")
-            XMLUtils.add_child(self.doc, direction_type_elem, "words", {"xml_space": "Yes"}, bar.score_tag)
+        direction_elem = XMLUtils.add_child(self.doc, measure_elem, "direction", {"placement": "above"})
+        direction_type_elem = XMLUtils.add_child(self.doc, direction_elem, "direction-type")
+        XMLUtils.add_child(self.doc, direction_type_elem, "words", {"xml_space": "Yes"}, "Cresc.")
+        XMLUtils.add_child(self.doc, direction_elem, "staff", {}, "2")
         """
 
         if bar.directions is not None and self.current_bar_directions != bar.directions:

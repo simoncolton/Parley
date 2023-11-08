@@ -160,7 +160,6 @@ class VideoExporter:
 
     def get_annotated_images(self, composition, score_images, long_score_image, thumbnail_image, sidebar_width, bars, bar_boxes):
         font = ImageFont.truetype('Tahoma.ttf', 20)
-        pedal_font = ImageFont.truetype('Times New Roman Italic.ttf', 17)
 
         sidebar_height = long_score_image.size[1]
         sidebar_image = Image.new('RGBA', (sidebar_width, sidebar_height), (255, 255, 255, 255))
