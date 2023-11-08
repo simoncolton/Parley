@@ -19,7 +19,7 @@ class Flaneur:
     def get_composition_gen_spec(self):
 
         random_seed = random.randint(0, 100000)
-        #random_seed = 60161
+        random_seed = 55649
 
         print("Random seed:", random_seed)
 
@@ -230,10 +230,11 @@ class Flaneur:
             Parameter("musescore_cli", "/Applications/MuseScore\ 3.app/Contents/MacOS/mscore"),
             Parameter("resources_dir", "/Users/Simon/Dropbox/Code/Parley/ParleyV2/Resources"),
             Parameter("ffmpeg_cli", "ffmpeg"),
+            Parameter("codec", "libx265"),
             Parameter("audio_formats", ["WAV", "MP3"]),
             Parameter("video_fade_in", False),
             Parameter("dpi", 100),
-            Parameter("fps", 5),
+            Parameter("fps", 3),
             Parameter("end_rest_ms", 3000),
             Parameter("performance_spec", performance_spec)
         ]
