@@ -218,7 +218,8 @@ class TimingUtils:
                 while bar_num < len(bars):
                     bar = bars[bar_num]
                     pspec = performance_spec.instantiate_me(composition, bar)
-                    if "sustain_pedal_bars" in pspec and pspec["sustain_pedal_bars"] is not None:
+                    sustain_pedal_bars = pspec["sustain_pedal_bars"]
+                    if sustain_pedal_bars is not None and sustain_pedal_bars > 0:
                         sustain_pedal_bars = pspec["sustain_pedal_bars"]
                         pedal_on_bars.append(bar)
                         off_bar_num = bar_num + sustain_pedal_bars - 1
