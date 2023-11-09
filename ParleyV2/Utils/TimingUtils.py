@@ -120,7 +120,7 @@ class TimingUtils:
                         start_tick_move += note.midi_timing.off_tick - old_off
                 total_ticks = sum([n.midi_timing.duration_ticks for n in note_sequence.notes])
 
-                if total_ticks != bar.duration_ticks:
+                if total_ticks != bar.duration_ticks and len(notes) > 0:
                     diff = bar.duration_ticks - total_ticks
                     notes[-1].midi_timing.duration_ticks += diff
 
@@ -184,7 +184,8 @@ class TimingUtils:
                     notes_to_pause_hash[note_sequence.track_num]=poss_notes[-1]
                 else:
                     overlap_v.sort(key=lambda x: x[0])
-                    notes_to_pause_hash[note_sequence.track_num]=overlap_v[-1][1]
+                    if len(overlap_v) > 0:
+                        notes_to_pause_hash[note_sequence.track_num]=overlap_v[-1][1]
         return notes_to_pause_hash
 
     def extend_note_duration(composition, note, all_notes_to_pause, extra):

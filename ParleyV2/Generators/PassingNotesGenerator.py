@@ -24,7 +24,9 @@ class PassingNotesGenerator:
         return composition
 
     def add_passing_notes(self, spec, previous_spec, note_sequence, previous_note_sequence):
-        if previous_note_sequence is not None:
+        if len(note_sequence.notes) == 0:
+            return
+        if previous_note_sequence is not None and len(previous_note_sequence.notes) > 0:
             pitch = note_sequence.notes[0].pitch
             end_notes = self.get_expanded_notes(note=previous_note_sequence.notes[-1], target_pitch=pitch, spec=previous_spec)
             previous_note_sequence.notes.remove(previous_note_sequence.notes[-1])

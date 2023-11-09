@@ -4,6 +4,7 @@ import time
 from ParleyV2.Specifications.ConstrainedSpecification import *
 from ParleyV2.Specifications.SoundFontClasses import *
 from ParleyV2.Utils.MusicUtils import *
+from ParleyV2.Utils.AccompanimentUtils import *
 from ParleyV2.Logistics.Constants import *
 import warnings
 import os
@@ -19,7 +20,7 @@ class Flaneur:
     def get_composition_gen_spec(self):
 
         random_seed = random.randint(0, 100000)
-        #random_seed = 37822
+        #random_seed = 30593
 
         print("Random seed:", random_seed)
 
@@ -107,12 +108,12 @@ class Flaneur:
 
         reverb_param = Parameter("reverb")
 #        reverb_param.add_constrained_value(4, "efi=A,tn=0")
-        reverb_param.add_constrained_value(0.2, "efi=A")
+        reverb_param.add_constrained_value(0.4, "efi=A")
         reverb_param.add_constrained_value(0.6, "efi=B")
 
         sustain_pedal_bars_param = Parameter("sustain_pedal_bars")
-        sustain_pedal_bars_param.add_constrained_value(1, "efi=A")
-        sustain_pedal_bars_param.add_constrained_value(2, "efi=B")
+        sustain_pedal_bars_param.add_constrained_value(0, "efi=A")
+        sustain_pedal_bars_param.add_constrained_value(1, "efi=B")
 
         performance_params = [
             reverb_param,
@@ -132,7 +133,7 @@ class Flaneur:
         fixed_scale_param.add_constrained_value("epB_scale", "efi=B")
 
         output_stem = f"{self.output_dir}/flaneur_{random_seed}"
-        num_minutes = 2
+        num_minutes = 3
 
         bar_start_duration_ms_param = Parameter("bar_start_duration_ms")
         bar_start_duration_ms_param.add_constrained_value(3000, "efi=A")
@@ -254,13 +255,9 @@ class Flaneur:
                                                               {"output_stem": output_stem + "_lead_sheet",
                                                                "score_parts": lead_sheet_score_parts})
 
-        bass_rhythm_param = Parameter("rhythm")
-        bass_rhythm_param.add_constrained_value([], "cbn=1", priority=1)
-        bass_rhythm_param.add_constrained_value(["1/4:1/4", "3/4:2/4"], "cbn=-1", priority=1)
-        bass_rhythm_param.add_constrained_value(["1/4:1/4", "3/4:1/4"], "efi=A,cbc=1/4|efi=A,cbc=2/4|efi=A,cbc=3/4")
-        bass_rhythm_param.add_constrained_value(["1/4:1/4"], "efi=A,cbc=4/4")
-        bass_rhythm_param.add_constrained_value(["1/4:1/4", "3/4:1/4"], "efi=B,br=1/2")
-        bass_rhythm_param.add_constrained_value(["1/4:1/4", "2/4:1/4", "3/4:1/4", "4/4:1/4"], "efi=B,br=2/2")
+        accompaniment_num = random.randint(0, 4)
+
+        #accompaniment_num = 3
 
         accompaniment_volume_param = Parameter("volume")
         accompaniment_volume_param.set_interpolation_counter("ebp")
@@ -269,54 +266,7 @@ class Flaneur:
         accompaniment_volume_param.add_constrained_interpolation_value("accompaniment_end_episode_volume", 0, "efi=B")
         accompaniment_volume_param.add_constrained_interpolation_value("accompaniment_start_episode_volume", 1, "efi=B")
 
-        bass_backbone_note_sequence_params = [
-            Parameter("applier_class_name", "RhythmNoteSequenceGenerator"),
-            Parameter("input_composition_id", "chord_sequence"),
-            Parameter("output_composition_id", "bass_backbone"),
-            Parameter("voice_id", "bass"),
-            Parameter("instrument_name", "piano"),
-            Parameter("track_num", 0),
-            Parameter("channel_num", 0),
-            Parameter("leads_dynamics", False),
-            Parameter("backbone_note", 1),
-            Parameter("focal_pitch", 43),
-            bass_instrument_param,
-            bass_rhythm_param,
-            accompaniment_volume_param
-        ]
-
-        bass_backbone_note_sequence_spec = ParameterisedSpecification(bass_backbone_note_sequence_params)
-
-        chord_rhythm_param = Parameter("rhythm")
-        chord_rhythm_param.add_constrained_value([], "cbn=1", priority=1)
-        chord_rhythm_param.add_constrained_value(["2/4:1/4"], "cbn=-1", priority=1)
-        chord_rhythm_param.add_constrained_value(["2/4:1/4", "4/4:1/4"], "efi=A,cbc=1/4|efi=A,cbc=2/4|efi=A,cbc=3/4")
-        chord_rhythm_param.add_constrained_value(["2/4:1/4", "3/4:1/4", "4/4:1/4"], "efi=A,cbc=4/4")
-        chord_rhythm_param.add_constrained_value(["2/4:1/4", "4/4:1/4"], "efi=B,br=1/2")
-        chord_rhythm_param.add_constrained_value([], "efi=B,br=2/2")
-
-        chord_tonic_backbone_note_sequence_params = [
-            Parameter("applier_class_name", "RhythmNoteSequenceGenerator"),
-            Parameter("output_composition_id", "tonic_backbone"),
-            Parameter("voice_id", "tonic_chord"),
-            Parameter("instrument_name", "piano"),
-            Parameter("track_num", 1),
-            Parameter("channel_num", 1),
-            Parameter("leads_dynamics", False),
-            Parameter("backbone_note", 1),
-            Parameter("focal_pitch", 55),
-            chords_instrument_param,
-            chord_rhythm_param,
-            accompaniment_volume_param
-        ]
-
-        chord_tonic_backbone_note_sequence_spec = ParameterisedSpecification(chord_tonic_backbone_note_sequence_params)
-        third_changes = {"output_composition_id": "third_backbone",
-                         "track_num": 2, "channel_num": 2, "backbone_note": 2}
-        chord_third_backbone_note_sequence_spec = ParameterisedSpecification(chord_tonic_backbone_note_sequence_params, third_changes)
-        fifth_changes = {"output_composition_id": "fifth_backbone",
-                         "track_num": 3, "channel_num": 3, "backbone_note": 3}
-        chord_fifth_backbone_note_sequence_spec = ParameterisedSpecification(chord_tonic_backbone_note_sequence_params, fifth_changes)
+        bass_backbone_note_sequence_spec, chord_tonic_backbone_note_sequence_spec, chord_third_backbone_note_sequence_spec, chord_fifth_backbone_note_sequence_spec = AccompanimentUtils.get_accompaniment_specs(accompaniment_num, bass_instrument_param, chords_instrument_param, accompaniment_volume_param)
 
         vl_melody_volume_param = Parameter("volume")
         vl_melody_volume_param.set_interpolation_counter("ebp")
@@ -601,7 +551,7 @@ class Flaneur:
         specs_to_apply_param.append(form_spec)
         specs_to_apply_param.append(chord_sequence_spec)
         specs_to_apply_param.append(lead_sheet_generator_spec)
-        specs_to_apply_param.append(lead_sheet_exporter_spec)
+        #specs_to_apply_param.append(lead_sheet_exporter_spec)
         specs_to_apply_param.append(bass_backbone_note_sequence_spec)
         specs_to_apply_param.append(chord_tonic_backbone_note_sequence_spec)
         specs_to_apply_param.append(chord_third_backbone_note_sequence_spec)

@@ -338,10 +338,10 @@ class MusicUtils:
         sharps = [6, 1, 8, 3, 10, 5, 0]
         flats = [10, 3, 8, 1, 6, 11, 4]
         sharp_pos = 0
-        while sharps[sharp_pos] in scale.pitch_classes and sharp_pos < len(sharps):
+        while sharp_pos < len(sharps) and sharps[sharp_pos] in scale.pitch_classes:
             sharp_pos += 1
         flat_pos = 0
-        while flats[flat_pos] in scale.pitch_classes and flat_pos < len(flats):
+        while flat_pos < len(flats) and flats[flat_pos] in scale.pitch_classes:
             flat_pos += 1
         if "♯" in scale.tonic_letter:
             return sharp_pos
