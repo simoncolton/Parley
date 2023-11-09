@@ -50,22 +50,24 @@ class EditingUtils:
       excerpts_composition.bars_hash = {}
       if previous_bar is not None:
         for note_sequence in previous_bar.note_sequences:
-          if note_sequence.notes[0].tie_type == "mid":
-            note_sequence.notes[0].tie_type = "start"
-          if note_sequence.notes[0].tie_type == "end":
-            note_sequence.notes[0].tie_type = None
+          if len(note_sequence.notes) > 0:
+              if note_sequence.notes[0].tie_type == "mid":
+                note_sequence.notes[0].tie_type = "start"
+              if note_sequence.notes[0].tie_type == "end":
+                note_sequence.notes[0].tie_type = None
 
       for ind, altered_bar in enumerate(altered_bars):
         for note_sequence in altered_bar.note_sequences:
-          if previous_bar is None:
-            if note_sequence.notes[0].tie_type == "mid":
-              note_sequence.notes[0].tie_type = "start"
-            if note_sequence.notes[0].tie_type == "end":
-              note_sequence.notes[0].tie_type = None
-          if note_sequence.notes[-1].tie_type == "mid":
-            note_sequence.notes[-1].tie_type = "end"
-          if note_sequence.notes[-1].tie_type == "start":
-            note_sequence.notes[-1].tie_type = None
+          if len(note_sequence.notes) > 0:
+              if previous_bar is None:
+                if note_sequence.notes[0].tie_type == "mid":
+                  note_sequence.notes[0].tie_type = "start"
+                if note_sequence.notes[0].tie_type == "end":
+                  note_sequence.notes[0].tie_type = None
+              if note_sequence.notes[-1].tie_type == "mid":
+                note_sequence.notes[-1].tie_type = "end"
+              if note_sequence.notes[-1].tie_type == "start":
+                note_sequence.notes[-1].tie_type = None
         if previous_bar is not None:
           excerpts_composition.bars.append(copy.deepcopy(previous_bar))
           excerpts_composition.bars.append(altered_bar)
