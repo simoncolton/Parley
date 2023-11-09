@@ -20,6 +20,10 @@ class AccompanimentUtils:
             bass_rhythm_param.add_constrained_value(["1/4:1/8", "3/4:1/8"], "efi=A|efi=B")
             bass_rhythm_param.add_constrained_value(["1/1:1/1"], "ebn=-1", priority=1)
             bass_rhythm_param.add_constrained_value(["1/4:1/4", "2/4:1/4", "3/4:1/4", "4/4:1/4"], "efi=B,br=4/4", priority=1)
+        elif accompaniment_num == 4:
+            return AccompanimentUtils.get_full_arpeggio_param("bass")
+        elif accompaniment_num == 5:
+            return AccompanimentUtils.get_chords_only_param(1)
 
         return bass_rhythm_param
 
@@ -55,18 +59,36 @@ class AccompanimentUtils:
             return chord_rhythm_param
         elif accompaniment_num == 3:
             return AccompanimentUtils.get_arpeggio_rhythm_param(4, 8)
+        elif accompaniment_num == 4:
+            return AccompanimentUtils.get_full_arpeggio_param("tonic")
+        elif accompaniment_num == 5:
+            return AccompanimentUtils.get_chords_only_param(1)
 
     def get_third_rhythm_param(accompaniment_num):
         if accompaniment_num < 3:
             return AccompanimentUtils.get_chord_rhythms_param(accompaniment_num)
         elif accompaniment_num == 3:
             return AccompanimentUtils.get_arpeggio_rhythm_param(2, 6)
+        elif accompaniment_num == 4:
+            return AccompanimentUtils.get_full_arpeggio_param("third")
+        elif accompaniment_num == 5:
+            return AccompanimentUtils.get_chords_only_param(2)
 
     def get_fifth_rhythm_param(accompaniment_num):
         if accompaniment_num < 3:
             return AccompanimentUtils.get_chord_rhythms_param(accompaniment_num)
         elif accompaniment_num == 3:
             return AccompanimentUtils.get_arpeggio_rhythm_param(3, 7)
+        elif accompaniment_num == 4:
+            return AccompanimentUtils.get_full_arpeggio_param("fifth")
+        elif accompaniment_num == 5:
+            return AccompanimentUtils.get_chords_only_param(2)
+
+    def get_chords_only_param(chord_num):
+        chords_only_param = Parameter("rhythm")
+#        chords_only_param.add_constrained_value([], "cbn=1", priority=2)
+        chords_only_param.add_constrained_value(["1/1:1/1"], "efi=A|efi=B", priority=2)
+        return chords_only_param
 
     def get_arpeggio_rhythm_param(first_beat, second_beat):
         arpeggio_rhythm_param = Parameter("rhythm")
@@ -74,6 +96,26 @@ class AccompanimentUtils:
         arpeggio_rhythm_param.add_constrained_value([], "efi=B,br=4/4", priority=1)
         arpeggio_rhythm_param.add_constrained_value([f"{first_beat}/8:1/8", f"{second_beat}/8:1/8"], "efi=A|efi=B")
         arpeggio_rhythm_param.add_constrained_value(["1/1:1/1"], "ebn=-1", priority=2)
+        return arpeggio_rhythm_param
+
+    def get_full_arpeggio_param(chord_pos):
+        arpeggio_rhythm_param = Parameter("rhythm")
+        arpeggio_rhythm_param.add_constrained_value([], "cbn=1|cbn=-1", priority=2)
+        if chord_pos == "bass" or chord_pos == "tonic":
+            arpeggio_rhythm_param.add_constrained_value(["1/1:1/1"], "cbn=1|cbn=-1", priority=2)
+        if chord_pos == "bass":
+            positions = [1, 7, 13]
+        elif chord_pos == "third":
+            positions = [2, 6, 8, 12, 14]
+        elif chord_pos == "fifth":
+            positions = [3, 5, 9, 11, 15]
+        elif chord_pos == "tonic":
+            positions = [4, 10, 16]
+        ids = []
+        for pos in positions:
+            ids.append(f"{pos}/16:1/16")
+        arpeggio_rhythm_param.add_constrained_value(ids, "efi=A|efi=B")
+        print(arpeggio_rhythm_param)
         return arpeggio_rhythm_param
 
     def get_accompaniment_specs(accompaniment_num, bass_instrument_param, chords_instrument_param, accompaniment_volume_param):

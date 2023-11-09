@@ -22,6 +22,10 @@ class Flaneur:
         random_seed = random.randint(0, 100000)
         #random_seed = 30593
 
+
+        accompaniment_num = random.randint(0, 4)
+        accompaniment_num = 5
+
         print("Random seed:", random_seed)
 
         epA_chord_allowances = "min;dim"
@@ -72,7 +76,7 @@ class Flaneur:
             scaleA = MusicUtils.get_random_scale(epA_chord_allowances)
 
         # Need to use these characters: ♭ and ♯
-        #scaleA = MusicUtils.get_named_scale("c_minor")
+        scaleA = MusicUtils.get_named_scale("c_major")
 
         scaleB = scaleA
 
@@ -254,10 +258,6 @@ class Flaneur:
         lead_sheet_exporter_spec = ParameterisedSpecification(total_exporter_params,
                                                               {"output_stem": output_stem + "_lead_sheet",
                                                                "score_parts": lead_sheet_score_parts})
-
-        accompaniment_num = random.randint(0, 4)
-
-        #accompaniment_num = 3
 
         accompaniment_volume_param = Parameter("volume")
         accompaniment_volume_param.set_interpolation_counter("ebp")
