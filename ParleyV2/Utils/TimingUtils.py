@@ -128,9 +128,7 @@ class TimingUtils:
             for note_sequence in bar.note_sequences:
                 for note in note_sequence.notes:
                     if note.pause_64ths is not None:
-                        all_notes_to_pause = TimingUtils.get_all_notes_to_pause(note_sequence.track_num, note, bar)
-                        extra = int(round((note.pause_64ths/64) * bar.duration_ticks))
-                        TimingUtils.extend_note_duration(composition, note, all_notes_to_pause, extra)
+                        TimingUtils.handle_pause(composition, bar, note_sequence, note)
 
         for track_num in track_nums:
             notes = ExtractionUtils.get_notes_for_track_num(composition, track_num)
@@ -167,45 +165,29 @@ class TimingUtils:
                         note.midi_timing.duration_ticks += extra
                         note.midi_timing.off_tick += extra
 
-    def get_all_notes_to_pause(track_num, note, bar):
-        notes_to_pause_hash = {}
-        notes_to_pause_hash[track_num] = note
-
-        for note_sequence in bar.note_sequences:
-            if note_sequence.track_num != track_num:
-                poss_notes = []
-                overlap_v = []
-                for n in note_sequence.notes:
-                    if n.timing.start64th >= note.timing.start64th and \
-                            n.timing.start64th + n.timing.duration64ths <= note.timing.start64th + note.timing.duration64ths:
-                        poss_notes.append(n)
-                    overlap_v.append((TimingUtils.get_note_overlap_duration64ths(n, note), n))
-                if len(poss_notes) > 0:
-                    notes_to_pause_hash[note_sequence.track_num]=poss_notes[-1]
-                else:
-                    overlap_v.sort(key=lambda x: x[0])
-                    if len(overlap_v) > 0:
-                        notes_to_pause_hash[note_sequence.track_num]=overlap_v[-1][1]
-        return notes_to_pause_hash
-
-    def extend_note_duration(composition, note, all_notes_to_pause, extra):
-        bar = composition.bars_hash[note.bar_num]
+    def handle_pause(composition, bar, note_sequence, note):
+        extra = int(round((note.pause_64ths / 64) * bar.duration_ticks))
+        notes_after = [n for n in ExtractionUtils.get_notes_in_composition(composition) if n.midi_timing.on_tick > note.midi_timing.off_tick]
+        for n in notes_after:
+            n.midi_timing.on_tick += extra
+            n.midi_timing.off_tick += extra
         bar.duration_ticks += extra
         bar.end_tick += extra
-        bars_adjusted = [bar]
-        for track_num in all_notes_to_pause.keys():
-            n = all_notes_to_pause[track_num]
-            n.midi_timing.duration_ticks += extra
-            n.midi_timing.off_tick += extra
-            for tn in ExtractionUtils.get_notes_for_track_num(composition, track_num):
-                if tn.track_note_num > n.track_note_num:
-                    tn.midi_timing.on_tick += extra
-                    tn.midi_timing.off_tick += extra
-                    bar = composition.bars_hash[tn.bar_num]
-                    if bar not in bars_adjusted:
-                        bar.start_tick += extra
-                        bar.end_tick += extra
-                        bars_adjusted.append(bar)
+        for b in [b for b in composition.bars if b.bar_num > bar.bar_num]:
+            b.start_tick += extra
+            b.end_tick += extra
+        s64 = note.timing.start64th
+        e64 = note.timing.start64th + note.timing.duration64ths
+        addon_ticks_per_64th = extra/(e64 - s64)
+        bar_notes = ExtractionUtils.get_notes_in_bar(bar)
+        for note_to_change in bar_notes:
+            num_64ths_from_pause_start = note_to_change.timing.start64th - s64
+            num_64ths_from_pause_start_to_end = note_to_change.timing.start64th + note_to_change.timing.duration64ths - s64
+            if num_64ths_from_pause_start >= 0:
+                note_to_change.midi_timing.on_tick += int(num_64ths_from_pause_start * addon_ticks_per_64th)
+                addon_ticks_for_note = int(note_to_change.timing.duration64ths * addon_ticks_per_64th)
+                note_to_change.midi_timing.duration_ticks += addon_ticks_for_note
+                note_to_change.midi_timing.off_tick += int(num_64ths_from_pause_start_to_end * addon_ticks_per_64th)
 
     def get_pedal_on_and_off_bars(composition, export_spec):
         pedal_on_bars = []

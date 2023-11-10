@@ -20,10 +20,10 @@ class Flaneur:
     def get_composition_gen_spec(self):
 
         random_seed = random.randint(0, 100000)
-        random_seed = 89158
+        random_seed = 23623
 
         accompaniment_num = random.randint(0, 4)
-        accompaniment_num = 4
+        accompaniment_num = 1
 
         print("Random seed:", random_seed)
 
@@ -75,7 +75,7 @@ class Flaneur:
             scaleA = MusicUtils.get_random_scale(epA_chord_allowances)
 
         # Need to use these characters: ♭ and ♯
-        scaleA = MusicUtils.get_named_scale("c_major")
+        scaleA = MusicUtils.get_named_scale("d_blues")
 
         scaleB = scaleA
 
@@ -136,7 +136,7 @@ class Flaneur:
         fixed_scale_param.add_constrained_value("epB_scale", "efi=B")
 
         output_stem = f"{self.output_dir}/flaneur_{random_seed}"
-        num_minutes = 0.5
+        num_minutes = 3
 
         bar_start_duration_ms_param = Parameter("bar_start_duration_ms")
         bar_start_duration_ms_param.add_constrained_value(2500, "efi=A")
@@ -547,6 +547,10 @@ class Flaneur:
         ]
         listening_edit_spec = ParameterisedSpecification(listening_edit_params)
 
+        surplus_note_removal_editor_spec = ParameterisedSpecification([
+            Parameter("applier_class_name", "SurplusNoteRemovalEditor")
+        ])
+
         specs_to_apply_param = []
         specs_to_apply_param.append(form_spec)
         specs_to_apply_param.append(chord_sequence_spec)
@@ -559,18 +563,17 @@ class Flaneur:
         specs_to_apply_param.append(vl_melody_spec)
         specs_to_apply_param.append(melody_passing_notes_spec)
         #specs_to_apply_param.append(pre_edit_exporter_spec)
-        """
         specs_to_apply_param.append(vl_melody_interestingness_edit_spec)
         specs_to_apply_param.append(bass_interestingness_edit_spec)
         specs_to_apply_param.append(chord_tonic_interestingness_edit_spec)
         specs_to_apply_param.append(chord_third_interestingness_edit_spec)
         specs_to_apply_param.append(chord_fifth_interestingness_edit_spec)
-        """
         specs_to_apply_param.append(bass_passing_notes_spec)
         specs_to_apply_param.append(note_removal_editor)
         specs_to_apply_param.append(melody_repetition_editor_spec)
         specs_to_apply_param.append(melody_tuplets_spec)
         specs_to_apply_param.append(bass_tuplets_spec)
+        specs_to_apply_param.append(surplus_note_removal_editor_spec)
         #specs_to_apply_param.append(post_edit_exporter_spec)
         specs_to_apply_param.append(harmonisation_edit_spec)
         specs_to_apply_param.append(interestingness_edit_analyser_spec)

@@ -35,7 +35,8 @@ class InterestingnessEditAnalyser:
     def get_bar_score(self, note_sequence):
         score = 0
         for note in note_sequence.notes:
-            if note.sorted_pitch_classes is not None:
-                pos = note.sorted_pitch_classes.index(MusicUtils.pitch_class(note.pitch))
-                score += (10 - pos)
+            if note.pitch is not None:
+                if note.sorted_pitch_classes is not None:
+                    pos = note.sorted_pitch_classes.index(MusicUtils.pitch_class(note.pitch))
+                    score += (10 - pos)
         return score/len(note_sequence.notes)

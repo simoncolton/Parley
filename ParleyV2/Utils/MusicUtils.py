@@ -10,7 +10,7 @@ class MusicUtils:
         return pitch//12 - 1
 
     def pitch_class(pitch):
-            return pitch % 12
+        return pitch % 12
 
     def pitch_class_distance_from_pitches(pitch1, pitch2):
         pitch_class1 = MusicUtils.pitch_class(pitch1)

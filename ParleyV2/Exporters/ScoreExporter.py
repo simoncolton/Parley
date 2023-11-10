@@ -18,7 +18,7 @@ class ScoreExporter:
                                 4: "16th", 2: "32nd", 1: "64th"}
         self.added_chord_nums = []
         self.scale = export_spec.get_value("scale")
-        self.uses_flats = self.scale.key_sig < 0
+        self.uses_flats = self.scale.key_sig < 0 or "♭" in self.scale.tonic_letter
 
     def apply(self, start_composition):
         composition = copy.deepcopy(start_composition)

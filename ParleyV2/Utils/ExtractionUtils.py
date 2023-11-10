@@ -9,6 +9,12 @@ class ExtractionUtils:
         track_nums.sort()
         return track_nums
 
+    def get_notes_in_bar(bar):
+        bar_notes = []
+        for note_sequence in bar.note_sequences:
+            bar_notes.extend(note_sequence.notes)
+        return bar_notes
+
     def get_notes_in_composition(composition):
         all_notes = []
         for track_num in ExtractionUtils.get_track_nums(composition):
