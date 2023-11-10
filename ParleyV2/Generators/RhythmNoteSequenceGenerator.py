@@ -47,8 +47,15 @@ class RhythmNoteSequenceGenerator:
                             chord_for_note = chord1
                     if chord_for_note is None:
                         chord_for_note = composition.chords_hash[bar.chord_nums[-1]]
-                    pitch = chord_for_note.pitches[spec["backbone_note"] - 1]
-                    pitch = MusicUtils.map_pitch_to_focal_pitch(pitch, spec["focal_pitch"])
+                    moved_pitches = []
+                    mid_pitch = chord_for_note.pitches[1]
+                    moved_mid_pitch = MusicUtils.map_pitch_to_focal_pitch(mid_pitch, spec["focal_pitch"])
+                    diff1 = chord_for_note.pitches[1] - chord_for_note.pitches[0]
+                    diff2 = chord_for_note.pitches[2] - chord_for_note.pitches[1]
+                    moved_pitches = [moved_mid_pitch - diff1, moved_mid_pitch, moved_mid_pitch + diff2]
+                    pitch_offset = spec["octave_offset"] * 12
+                    pitch = moved_pitches[spec["backbone_note"] - 1] + pitch_offset
+                    #pitch = MusicUtils.map_pitch_to_focal_pitch(pitch, spec["focal_pitch"])
                     note = Note(pitch=pitch, volume=volume, note_type="backbone",
                                 timing=timing, chord_num=chord_for_note.chord_num,
                                 note_sequence_num=note_sequence.note_sequence_num, bar_num=note_sequence.bar_num,

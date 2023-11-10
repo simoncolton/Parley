@@ -86,8 +86,8 @@ class AccompanimentUtils:
 
     def get_chords_only_param(chord_num):
         chords_only_param = Parameter("rhythm")
-#        chords_only_param.add_constrained_value([], "cbn=1", priority=2)
-        chords_only_param.add_constrained_value(["1/1:1/1"], "efi=A|efi=B", priority=2)
+        chords_only_param.add_constrained_value(["1/4:1/4", "2/4:1/4", "3/4:2/4"], "cbn=-1", priority=1)
+        chords_only_param.add_constrained_value(["1/4:1/4", "2/4:1/4", "3/4:1/4", "4/4:1/4"], "efi=A|efi=B")
         return chords_only_param
 
     def get_arpeggio_rhythm_param(first_beat, second_beat):
@@ -115,23 +115,16 @@ class AccompanimentUtils:
         for pos in positions:
             ids.append(f"{pos}/16:1/16")
         arpeggio_rhythm_param.add_constrained_value(ids, "efi=A|efi=B")
-        print(arpeggio_rhythm_param)
         return arpeggio_rhythm_param
 
     def get_accompaniment_specs(accompaniment_num, bass_instrument_param, chords_instrument_param, accompaniment_volume_param):
 
         bass_rhythm_param = AccompanimentUtils.get_bass_rhythm_param(accompaniment_num)
-        bass_focal_pitch = 43
-        tonic_focal_pitch = 50
-        third_focal_pitch = 50
-        fifth_focal_pitch = 50
-        if accompaniment_num == 2:
-            tonic_focal_pitch = 55
-        if accompaniment_num == 3:
-            tonic_focal_pitch = 60
-            third_focal_pitch = 50
-            fifth_focal_pitch = 55
-
+        bass_octave_offset = -1 if accompaniment_num < 3 or accompaniment_num == 5 else -1
+        tonic_octave_offset = 0 if accompaniment_num < 3 or accompaniment_num == 5 else 0
+        third_octave_offset = 0 if accompaniment_num < 3 or accompaniment_num == 5 else -1
+        fifth_octave_offset = 0 if accompaniment_num < 3 or accompaniment_num == 5 else -1
+        bass_backbone = 1 if accompaniment_num != 5 else 3
         params1 = [
             Parameter("applier_class_name", "RhythmNoteSequenceGenerator"),
             Parameter("input_composition_id", "chord_sequence"),
@@ -141,8 +134,9 @@ class AccompanimentUtils:
             Parameter("track_num", 0),
             Parameter("channel_num", 0),
             Parameter("leads_dynamics", False),
-            Parameter("backbone_note", 1),
-            Parameter("focal_pitch", bass_focal_pitch),
+            Parameter("backbone_note", bass_backbone),
+            Parameter("focal_pitch", 55),
+            Parameter("octave_offset", bass_octave_offset),
             bass_instrument_param,
             bass_rhythm_param,
             accompaniment_volume_param
@@ -159,7 +153,8 @@ class AccompanimentUtils:
             Parameter("channel_num", 1),
             Parameter("leads_dynamics", False),
             Parameter("backbone_note", 1),
-            Parameter("focal_pitch", tonic_focal_pitch),
+            Parameter("focal_pitch", 55),
+            Parameter("octave_offset", tonic_octave_offset),
             chords_instrument_param,
             tonic_rhythm_param,
             accompaniment_volume_param
@@ -176,7 +171,8 @@ class AccompanimentUtils:
             Parameter("channel_num", 1),
             Parameter("leads_dynamics", False),
             Parameter("backbone_note", 2),
-            Parameter("focal_pitch", third_focal_pitch),
+            Parameter("focal_pitch", 55),
+            Parameter("octave_offset", third_octave_offset),
             chords_instrument_param,
             third_rhythm_param,
             accompaniment_volume_param
@@ -193,7 +189,8 @@ class AccompanimentUtils:
             Parameter("channel_num", 1),
             Parameter("leads_dynamics", False),
             Parameter("backbone_note", 3),
-            Parameter("focal_pitch", fifth_focal_pitch),
+            Parameter("focal_pitch", 55),
+            Parameter("octave_offset", fifth_octave_offset),
             chords_instrument_param,
             fifth_rhythm_param,
             accompaniment_volume_param

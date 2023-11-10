@@ -20,7 +20,7 @@ class Flaneur:
     def get_composition_gen_spec(self):
 
         random_seed = random.randint(0, 100000)
-        #random_seed = 30593
+        #random_seed = 86855
 
 
         accompaniment_num = random.randint(0, 4)
