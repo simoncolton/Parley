@@ -136,7 +136,7 @@ class Flaneur:
         fixed_scale_param.add_constrained_value("epB_scale", "efi=B")
 
         output_stem = f"{self.output_dir}/flaneur_{random_seed}"
-        num_minutes = 3
+        num_minutes = 0.5
 
         bar_start_duration_ms_param = Parameter("bar_start_duration_ms")
         bar_start_duration_ms_param.add_constrained_value(2500, "efi=A")
@@ -150,7 +150,7 @@ class Flaneur:
             Parameter("applier_class_name", "BasicFormDesigner"),
             Parameter("output_composition_id", "basic_form"),
             Parameter("composition_duration_ms", 60000 * num_minutes),
-            Parameter("num_cycles", 1),
+            Parameter("num_cycles", 2),
             Parameter("cycle_form", "ABABA"),
             Parameter("beats_per_bar", 4),
             bar_start_duration_ms_param,

@@ -258,7 +258,10 @@ class Parameter:
                 details_satisfied.sort(key=lambda x: x.interpolation_point)
                 frac = None
                 if self.interpolation_counter == "ebp" or self.interpolation_counter == "ebk":
-                    frac = (bar.episode_bar_num - 1)/(episode.num_bars - 1)
+                    if episode.num_bars == 1:
+                        frac = 1
+                    else:
+                        frac = (bar.episode_bar_num - 1)/(episode.num_bars - 1)
                 for ind in range(0, len(details_satisfied) - 1):
                     if frac is not None and details_satisfied[ind].interpolation_point <= frac <= details_satisfied[ind + 1].interpolation_point:
                         dist = details_satisfied[ind + 1].interpolation_point - details_satisfied[ind].interpolation_point
