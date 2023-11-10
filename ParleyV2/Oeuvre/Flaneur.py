@@ -20,11 +20,10 @@ class Flaneur:
     def get_composition_gen_spec(self):
 
         random_seed = random.randint(0, 100000)
-        #random_seed = 86855
-
+        random_seed = 89158
 
         accompaniment_num = random.randint(0, 4)
-        accompaniment_num = 5
+        accompaniment_num = 4
 
         print("Random seed:", random_seed)
 
@@ -137,7 +136,7 @@ class Flaneur:
         fixed_scale_param.add_constrained_value("epB_scale", "efi=B")
 
         output_stem = f"{self.output_dir}/flaneur_{random_seed}"
-        num_minutes = 3
+        num_minutes = 0.6
 
         bar_start_duration_ms_param = Parameter("bar_start_duration_ms")
         bar_start_duration_ms_param.add_constrained_value(3000, "efi=A")

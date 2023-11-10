@@ -90,6 +90,8 @@ class VideoExporter:
                                                                                                      sidebar_width,
                                                                                                      bars, bar_boxes)
         long_score_image = overlaid_long_score_image
+        if long_score_image.size[1] < 1150:
+            thumbnail_y_offset = int((long_score_image.size[1] - thumbnail_image.size[0])/2)
         thumbnail_image = tagged_thumbnail_image
         thumbnail_page_width = thumbnail_image.size[0]
         thumb_size = thumbnail_image.size
@@ -132,13 +134,15 @@ class VideoExporter:
                                 fade_in_frame_image = self.get_fade_in_frame(i / fps, image)
                             else:
                                 fade_in_frame_image = image
-                            VideoUtils.pass_to_ffmpeg_pipe(pipe, fade_in_frame_image)
+                            ffmpeg_image = self.get_ffmpeg_image(fade_in_frame_image, long_score_image_size)
+                            VideoUtils.pass_to_ffmpeg_pipe(pipe, ffmpeg_image)
                         image.paste(composite_image, (thumbnail_x_offset, thumbnail_y_offset))
                     moved_line = \
                         (line[0][0] + thumbnail_x_offset + thumbnail_page_width, line[0][1] + y_offset + page_y_move),\
                         (line[1][0] + thumbnail_x_offset + thumbnail_page_width, line[1][1] + y_offset + page_y_move)
                     image_context.line(moved_line, fill="red", width=5)
-                    VideoUtils.pass_to_ffmpeg_pipe(pipe, image)
+                    ffmpeg_image = self.get_ffmpeg_image(image, long_score_image_size)
+                    VideoUtils.pass_to_ffmpeg_pipe(pipe, ffmpeg_image)
                     if y_offset - y_move_per_frame + score_height > page_height:
                         y_offset -= y_move_per_frame
                     overall_frame_num += 1
@@ -152,12 +156,21 @@ class VideoExporter:
         end_image.paste(sidebar_image, sidebar_pos)
         num_end_frames = (composition_frames - overall_frame_num) + fps
         for fn in range(0, num_end_frames):
-            VideoUtils.pass_to_ffmpeg_pipe(pipe, end_image)
+            ffmpeg_image = self.get_ffmpeg_image(end_image, long_score_image_size)
+            VideoUtils.pass_to_ffmpeg_pipe(pipe, ffmpeg_image)
         VideoUtils.close_pipe(pipe)
         process = subprocess.Popen(f"ffmpeg -hide_banner -loglevel error -i {temp_mp4_output_file_path} -itsoffset 1 -i {mp3_filepath} -c:v copy -map 0:v -map 1:a -y {mp4_output_file_path}", shell=True)
         process.wait()
         subprocess.run(f"rm {temp_mp4_output_file_path}", shell=True)
         return composition
+
+    def get_ffmpeg_image(self, image, long_score_image_size):
+        if long_score_image_size[1] < image.size[1]:
+            size = (image.size[0], int(long_score_image_size[1]/2) * 2) # Need to be even numbers
+            ffmpeg_image = Image.new('RGBA', size)
+            ffmpeg_image.paste(image)
+            return ffmpeg_image
+        return image
 
     def get_annotated_images(self, composition, score_images, long_score_image, thumbnail_image, sidebar_width, bars, bar_boxes):
         font = ImageFont.truetype('Tahoma.ttf', 20)
