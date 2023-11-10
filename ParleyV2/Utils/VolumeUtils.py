@@ -15,19 +15,27 @@ class VolumeUtils:
             volume = bar_start_volume + ((note.timing.start64th/64) * diff)
             note.volume = int(volume)
         if spec["leads_dynamics"]:
-            bar.directions = VolumeUtils.get_vol_direction(bar_start_volume)
+            bar.volume_direction = VolumeUtils.get_vol_direction(bar_start_volume)
 
     def get_vol_direction(midi_volume):
         for (low, high) in VolumeUtils.vols_dict:
             if low <= midi_volume <= high:
                 return VolumeUtils.vols_dict[(low, high)]
 
-    def update_volumes(episode, note_gen_spec):
+    def adjust_volume_for_bad_soundfont(note, note_sequence, soundfont_filepath, msg_type):
+        if "DoreMarkYamahaS6-v1.6.sf2" in soundfont_filepath:
+            if note.pitch == 58:
+                return int(round(note.volume * 0.8))
+        return note.volume
+
+"""
+    def update_volumes(composition, episode, note_gen_spec):
         specs = []
         for bar_ind, bar in enumerate(episode.bars):
             specs.append(SpecUtils.get_instantiated_copy(note_gen_spec, bar))
         for bar_ind, bar in enumerate(episode.bars):
             spec = specs[bar_ind]
+            spec = note_gen_spec.instantiate_me(composition, bar)
             midi_volume = spec.volume
             if note_gen_spec.leads_dynamics_direction:
                 previous_midi_volume = None if bar_ind == 0 else specs[bar_ind - 1].volume
@@ -42,9 +50,5 @@ class VolumeUtils:
                     for note in note_sequence.notes:
                         note.volume = int(round((bar_duration * next_midi_volume) + ((1 - bar_duration) * midi_volume)))
                         bar_duration += note.num_fracs/128
+"""
 
-    def adjust_volume_for_bad_soundfont(note, note_sequence, soundfont_filepath, msg_type):
-        if "DoreMarkYamahaS6-v1.6.sf2" in soundfont_filepath:
-            if note.pitch == 58:
-                return int(round(note.volume * 0.8))
-        return note.volume

@@ -1,5 +1,6 @@
 from ParleyV2.Artefacts.Artefacts import *
 from ParleyV2.Utils.ExtractionUtils import *
+from ParleyV2.Utils.DynamicsUtils import *
 import random
 
 
@@ -38,3 +39,4 @@ class CompositionGenerator:
                 composition.episode_track_notes_hash[(track_num, episode_num)] = ep_track_notes
                 for ind, note in enumerate(ep_track_notes):
                     note.episode_track_note_num = ind
+        DynamicsUtils.update_directions(composition, self.gen_spec)

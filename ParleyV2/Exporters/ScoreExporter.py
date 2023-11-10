@@ -17,7 +17,6 @@ class ScoreExporter:
         self.note_types_hash = {64: "whole", 32: "half", 16: "quarter", 8: "eighth",
                                 4: "16th", 2: "32nd", 1: "64th"}
         self.added_chord_nums = []
-        self.current_bar_directions = None
         self.scale = export_spec.get_value("scale")
         self.uses_flats = self.scale.key_sig < 0
 
@@ -110,19 +109,20 @@ class ScoreExporter:
                 ep_title += f" @ {start_s: .1f}s"
             XMLUtils.add_child(self.doc, direction_type_elem, "rehearsal", rehearsal_attrs, ep_title)
 
-        """
-        direction_elem = XMLUtils.add_child(self.doc, measure_elem, "direction", {"placement": "above"})
-        direction_type_elem = XMLUtils.add_child(self.doc, direction_elem, "direction-type")
-        XMLUtils.add_child(self.doc, direction_type_elem, "words", {"xml_space": "Yes"}, "Cresc.")
-        XMLUtils.add_child(self.doc, direction_elem, "staff", {}, "2")
-        """
-
-        if bar.directions is not None and self.current_bar_directions != bar.directions:
+        if bar.volume_direction is not None:
             dynamics_direction_elem = XMLUtils.add_child(self.doc, measure_elem, "direction", {"placement": "below"})
             direction_type_elem = XMLUtils.add_child(self.doc, dynamics_direction_elem, "direction-type")
             dynamics_elem = XMLUtils.add_child(self.doc, direction_type_elem, "dynamics", {"halign": "left"})
-            XMLUtils.add_child(self.doc, dynamics_elem, bar.directions)
-            self.current_bar_directions = bar.directions
+            XMLUtils.add_child(self.doc, dynamics_elem, bar.volume_direction)
+
+        if len(bar.directions) > 0:
+            bar_direction = bar.directions[0]
+            for direction in bar.directions[1:]:
+                bar_direction += " " + direction
+            direction_elem = XMLUtils.add_child(self.doc, measure_elem, "direction", {"placement": "below", "halign": "right"})
+            direction_type_elem = XMLUtils.add_child(self.doc, direction_elem, "direction-type")
+            XMLUtils.add_child(self.doc, direction_type_elem, "words", {"xml_space": "Yes"}, bar_direction)
+            XMLUtils.add_child(self.doc, direction_elem, "staff", {}, "1")
 
         """
         CAN'T GET PEDAL SIGNS TO BE PLACED BELOW THE STAVE!!!

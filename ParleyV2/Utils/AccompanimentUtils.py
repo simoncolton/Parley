@@ -100,10 +100,9 @@ class AccompanimentUtils:
 
     def get_full_arpeggio_param(chord_pos):
         arpeggio_rhythm_param = Parameter("rhythm")
-        arpeggio_rhythm_param.add_constrained_value([], "cbn=1|cbn=-1", priority=2)
-        if chord_pos == "bass" or chord_pos == "tonic":
-            arpeggio_rhythm_param.add_constrained_value(["1/1:1/1"], "cbn=1|cbn=-1", priority=2)
+        arpeggio_rhythm_param.add_constrained_value([], "cbn=1|cbn=-1", priority=1)
         if chord_pos == "bass":
+            arpeggio_rhythm_param.add_constrained_value(["1/1:1/1"], "cbn=1|cbn=-1", priority=2)
             positions = [1, 7, 13]
         elif chord_pos == "third":
             positions = [2, 6, 8, 12, 14]

@@ -136,15 +136,15 @@ class Flaneur:
         fixed_scale_param.add_constrained_value("epB_scale", "efi=B")
 
         output_stem = f"{self.output_dir}/flaneur_{random_seed}"
-        num_minutes = 0.6
+        num_minutes = 3
 
         bar_start_duration_ms_param = Parameter("bar_start_duration_ms")
-        bar_start_duration_ms_param.add_constrained_value(3000, "efi=A")
-        bar_start_duration_ms_param.add_constrained_value(2500, "efi=B")
+        bar_start_duration_ms_param.add_constrained_value(2500, "efi=A")
+        bar_start_duration_ms_param.add_constrained_value(3000, "efi=B")
 
         bar_end_duration_ms_param = Parameter("bar_end_duration_ms")
-        bar_end_duration_ms_param.add_constrained_value(2500, "efi=A")
-        bar_end_duration_ms_param.add_constrained_value(3000, "efi=B")
+        bar_end_duration_ms_param.add_constrained_value(3000, "efi=A")
+        bar_end_duration_ms_param.add_constrained_value(2500, "efi=B")
 
         form_params = [
             Parameter("applier_class_name", "BasicFormDesigner"),
@@ -280,7 +280,8 @@ class Flaneur:
         vl_melody_backbone_length_param.add_constrained_random_range_value(5, 7, "efi=B")
         vl_melody_backbone_length_param.set_interpolation_counter("ebp")
         vl_melody_backbone_length_param.add_constrained_interpolation_value(4, 0, "en=-1", priority=1)
-        vl_melody_backbone_length_param.add_constrained_interpolation_value(1, 1, "en=-1", priority=1)
+#        vl_melody_backbone_length_param.add_constrained_interpolation_value(2, 0.5, "en=-1,ebn=-3", priority=1)
+        vl_melody_backbone_length_param.add_constrained_interpolation_value(2, 1, "en=-1", priority=1)
 
         vl_melody_backbone_choice_param = Parameter("backbone_choice")
         vl_melody_backbone_choice_param.add_constrained_random_value("least_distance", None, 30)
@@ -586,6 +587,7 @@ class Flaneur:
             Parameter("random_seed", random_seed),
             Parameter("subtitle", scale_subtitle),
             Parameter("random_seed", random_seed),
+            Parameter("dynamic_lead_track_num", 4),
             Parameter("specs_to_apply", specs_to_apply_param)
         ]
 

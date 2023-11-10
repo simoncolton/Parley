@@ -65,6 +65,7 @@ class Bar:
     note_sequences: [] = None
     episode_num: int = None
     margin_comments: [] = None
+    volume_direction: "" = None
     directions: [] = None
     mtg_activation_vectors: [] = None
     mtg_activations_hash: {} = None
