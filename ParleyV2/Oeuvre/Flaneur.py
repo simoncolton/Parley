@@ -246,6 +246,8 @@ class Flaneur:
             Parameter("codec", "libx264"),
             Parameter("audio_formats", ["WAV", "MP3"]),
             Parameter("video_fade_in", False),
+            Parameter("video_border_pixels", 2),
+            Parameter("video_border_colour", (200, 200, 200, 200)),
             Parameter("dpi", 100),
             Parameter("fps", 3),
             Parameter("end_rest_ms", 3000),

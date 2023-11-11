@@ -165,12 +165,17 @@ class VideoExporter:
         return composition
 
     def get_ffmpeg_image(self, image, long_score_image_size):
+        ffmpeg_image = image
         if long_score_image_size[1] < image.size[1]:
             size = (image.size[0], int(long_score_image_size[1]/2) * 2) # Need to be even numbers
             ffmpeg_image = Image.new('RGBA', size)
             ffmpeg_image.paste(image)
-            return ffmpeg_image
-        return image
+        border = self.export_spec.get_value("video_border_pixels")
+        if border is not None and border > 0:
+            context = ImageDraw.Draw(ffmpeg_image)
+            border_colour = self.export_spec.get_value("video_border_colour")
+            context.rectangle((border, border, ffmpeg_image.size[0] - border, ffmpeg_image.size[1] - border), fill=None, outline=border_colour)
+        return ffmpeg_image
 
     def get_annotated_images(self, composition, score_images, long_score_image, thumbnail_image, sidebar_width, bars, bar_boxes):
         font = ImageFont.truetype('Tahoma.ttf', 20)
