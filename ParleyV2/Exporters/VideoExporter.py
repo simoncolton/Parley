@@ -96,7 +96,7 @@ class VideoExporter:
         thumbnail_page_width = thumbnail_image.size[0]
         thumb_size = thumbnail_image.size
 
-        for bar_ind in tqdm(range(0, len(composition.bars)), desc="Exporting video"):
+        for bar_ind in tqdm(range(0, len(composition.bars)), desc="Exporting video", leave=False):
             bar = composition.bars[bar_ind]
             bar_ticks_so_far += bar.duration_ticks
             bar_ms_so_far = (bar_ticks_so_far / 960) * 1000

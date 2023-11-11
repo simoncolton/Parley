@@ -75,7 +75,7 @@ class Flaneur:
             scaleA = MusicUtils.get_random_scale(epA_chord_allowances)
 
         # Need to use these characters: ♭ and ♯
-        scaleA = MusicUtils.get_named_scale("d_blues")
+        scaleA = MusicUtils.get_named_scale("a_major")
 
         scaleB = scaleA
 
@@ -225,6 +225,7 @@ class Flaneur:
         total_exporter_params = [
             Parameter("applier_class_name", "TotalExporter"),
             Parameter("output_composition_id", None),
+            Parameter("composition_title", title),
             Parameter("export_score", True),
             Parameter("export_audio", True),
             Parameter("export_video", False),
@@ -256,6 +257,7 @@ class Flaneur:
 
         lead_sheet_exporter_spec = ParameterisedSpecification(total_exporter_params,
                                                               {"output_stem": output_stem + "_lead_sheet",
+                                                               "composition_title": title + " (Lead Sheet)",
                                                                "score_parts": lead_sheet_score_parts})
 
         accompaniment_volume_param = Parameter("volume")
@@ -360,6 +362,7 @@ class Flaneur:
 
         pre_edit_exporter_spec = ParameterisedSpecification(total_exporter_params,
                                                             {"output_stem": output_stem + "_pre_edit",
+                                                             "composition_title": title + " (First Draft)",
                                                              "show_chord_name": False,
                                                              "score_parts": pre_edit_score_parts})
 
@@ -440,6 +443,7 @@ class Flaneur:
 
         post_edit_exporter_spec = ParameterisedSpecification(total_exporter_params,
                                                              {"output_stem": output_stem + "_post_edit",
+                                                              "composition_title": title + " (Second Draft)",
                                                               "show_chord_name": False,
                                                               "score_parts": post_edit_score_parts})
 
@@ -501,6 +505,7 @@ class Flaneur:
         harmonised_exporter_spec = ParameterisedSpecification(total_exporter_params,
                                                               {"input_composition_id": "discordancy_analysed",
                                                                "output_stem": output_stem + "_harmonised",
+                                                               "composition_title": title,
                                                                "show_chord_name": False,
                                                                "export_video": True,
                                                                "score_parts": harmonised_score_parts})
@@ -555,14 +560,14 @@ class Flaneur:
         specs_to_apply_param.append(form_spec)
         specs_to_apply_param.append(chord_sequence_spec)
         specs_to_apply_param.append(lead_sheet_generator_spec)
-        #specs_to_apply_param.append(lead_sheet_exporter_spec)
+        specs_to_apply_param.append(lead_sheet_exporter_spec)
         specs_to_apply_param.append(bass_backbone_note_sequence_spec)
         specs_to_apply_param.append(chord_tonic_backbone_note_sequence_spec)
         specs_to_apply_param.append(chord_third_backbone_note_sequence_spec)
         specs_to_apply_param.append(chord_fifth_backbone_note_sequence_spec)
         specs_to_apply_param.append(vl_melody_spec)
         specs_to_apply_param.append(melody_passing_notes_spec)
-        #specs_to_apply_param.append(pre_edit_exporter_spec)
+        specs_to_apply_param.append(pre_edit_exporter_spec)
         specs_to_apply_param.append(vl_melody_interestingness_edit_spec)
         specs_to_apply_param.append(bass_interestingness_edit_spec)
         specs_to_apply_param.append(chord_tonic_interestingness_edit_spec)
@@ -574,7 +579,7 @@ class Flaneur:
         specs_to_apply_param.append(melody_tuplets_spec)
         specs_to_apply_param.append(bass_tuplets_spec)
         specs_to_apply_param.append(surplus_note_removal_editor_spec)
-        #specs_to_apply_param.append(post_edit_exporter_spec)
+        specs_to_apply_param.append(post_edit_exporter_spec)
         specs_to_apply_param.append(harmonisation_edit_spec)
         specs_to_apply_param.append(interestingness_edit_analyser_spec)
         specs_to_apply_param.append(discordancy_analyser_spec)

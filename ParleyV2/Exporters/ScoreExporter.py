@@ -22,6 +22,7 @@ class ScoreExporter:
 
     def apply(self, start_composition):
         composition = copy.deepcopy(start_composition)
+        composition.title = self.export_spec.get_value("composition_title")
         self.composition = composition
         self.track_notes_hash = {}
         for track_num in ExtractionUtils.get_track_nums(composition):

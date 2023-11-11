@@ -18,7 +18,7 @@ class InterestingnessEditor:
         composition = copy.deepcopy(start_composition)
         self.listening_model = ListeningUtils.build_interestingness_model(ListeningUtils.classical_checkpoint_dir)
         track_num = self.edit_spec.get_value("track_num")
-        for episode_num in tqdm(range(1, composition.num_episodes + 1), desc=f"Likelihood editing track {track_num}"):
+        for episode_num in tqdm(range(1, composition.num_episodes + 1), desc=f"Likelihood editing track {track_num}", leave=False):
             all_notes = ExtractionUtils.get_notes_for_track_num(composition, track_num)
             episode_notes = [n for n in all_notes if composition.bars_hash[n.bar_num].episode_num == episode_num]
             self.apply_to_episode(composition, episode_notes, all_notes)

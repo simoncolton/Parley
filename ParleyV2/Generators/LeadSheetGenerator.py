@@ -9,7 +9,6 @@ class LeadSheetGenerator:
 
     def apply(self, start_composition):
         composition = copy.deepcopy(start_composition)
-        composition.title += " Lead Sheet"
         for bar in composition.bars:
             bar.note_sequences = []
             for note_num in range(0, 4):

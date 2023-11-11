@@ -46,7 +46,6 @@ class Constants:
         "phyrgian dominant": [0, 1, 4, 5, 7, 8, 10],
         "prometheus": [0, 2, 4, 6, 9, 10],
         "tritone": [0, 1, 4, 6, 7, 10],
-        "two-semitone": [0, 1, 2, 6, 7, 8],
         "altered dorian": [0, 2, 3, 6, 7, 9, 10],
         "whole tone": [0, 2, 4, 6, 8, 10],
         "yo": [0, 3, 5, 7, 10]
