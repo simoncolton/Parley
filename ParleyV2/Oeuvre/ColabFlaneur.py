@@ -659,28 +659,28 @@ class ColabFlaneur:
         ])
 
         lead_sheet_display_spec = ParameterisedSpecification([
-            Parameter("applier_class_name", "ColabDisplayCommunicator.py"),
+            Parameter("applier_class_name", "ColabDisplayCommunicator"),
             Parameter("text", "Here is the lead sheet for the composition:"),
             Parameter("pdf_postfix", "lead_sheet"),
             Parameter("show_mp3", True)
         ])
 
         pre_edit_display_spec = ParameterisedSpecification([
-            Parameter("applier_class_name", "ColabDisplayCommunicator.py"),
+            Parameter("applier_class_name", "ColabDisplayCommunicator"),
             Parameter("text", "This is the first draft of the composition:"),
             Parameter("pdf_postfix", "pre_edit"),
             Parameter("show_mp3", True)
         ])
 
         harmonised_display_spec = ParameterisedSpecification([
-            Parameter("applier_class_name", "ColabDisplayCommunicator.py"),
+            Parameter("applier_class_name", "ColabDisplayCommunicator"),
             Parameter("text", "This is the second draft of the composition:"),
             Parameter("pdf_postfix", "harmonised"),
             Parameter("show_mp3", True)
         ])
 
         final_display_spec = ParameterisedSpecification([
-            Parameter("applier_class_name", "ColabDisplayCommunicator.py"),
+            Parameter("applier_class_name", "ColabDisplayCommunicator"),
             Parameter("text", "Here is a video performance of the final composition:"),
             Parameter("pdf_postfix", None),
             Parameter("show_mp3", False)
