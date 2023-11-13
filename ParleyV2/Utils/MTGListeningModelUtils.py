@@ -3,6 +3,8 @@
 from ParleyV2.Utils.MarginUtils import *
 from ParleyV2.Utils.MidiUtils import *
 from scipy.io import wavfile
+import subprocess
+from essentia.standard import MonoLoader, TensorflowPredictEffnetDiscogs, TensorflowPredict2D, TensorflowPredictVGGish
 
 class MTGListeningModelUtils:
 
