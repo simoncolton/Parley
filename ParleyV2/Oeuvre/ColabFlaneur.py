@@ -1,6 +1,7 @@
 from ParleyV2.Specifications.ConstrainedSpecification import *
 from ParleyV2.Specifications.SoundFontClasses import *
 from ParleyV2.Utils.MusicUtils import *
+from ParleyV2.Utils.AccompanimentUtils import *
 import numpy as np
 
 class ColabFlaneur:
