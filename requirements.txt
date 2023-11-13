@@ -6,3 +6,5 @@ Pillow
 pdf2image
 pdfminer
 pydub
+PyPDF2
+essentia-tensorflow
