@@ -62,7 +62,7 @@ class MTGListeningModelEditor:
         current_activation = original_bar_copy.mtg_activations_hash[target_tag]
         improved_bars = [a for a in altered_bars if a.mtg_activations_hash[target_tag] > current_activation]
         improved_bars.sort(key=lambda x: x.mtg_activations_hash[target_tag], reverse=True)
-        global_mean = mtg_distribution[target_tag].mean
+        global_mean = MTGListeningModelUtils.mtg_distribution[target_tag].mean
         #print("Bar:", bar_num, "Current activation:", f"{current_activation/global_mean:.4f}", "Better activations:", [f"{b.mtg_activations_hash[target_tag]/global_mean:.4f}" for b in improved_bars])
         if len(improved_bars) > 0:
           best_bar = improved_bars[0]
@@ -75,7 +75,6 @@ class MTGListeningModelEditor:
         #print("Bar:", bar_num, "No alterations possible")
 
     def get_altered_bar(self, composition, original_bar, target_tag, fixed_scale, depth=1):
-      current_activation = original_bar.mtg_activations_hash[target_tag]
       altered_bar = copy.deepcopy(original_bar)
       track_num = self.edit_spec.get_value("track_num")
       discordancy_spec = self.edit_spec.get_value("discordancy_spec")
@@ -119,7 +118,6 @@ class MTGListeningModelEditor:
       original_bar.mtg_activation_vectors = altered_bar.mtg_activation_vectors
       original_bar.mtg_activations_hash = altered_bar.mtg_activations_hash
       track_num = self.edit_spec.get_value("track_num")
-      mean_for_tag = mtg_distribution[target_tag].mean
       short_tag = target_tag.split("__")[1]
       note_sequence = [n for n in original_bar.note_sequences if n.track_num == track_num][0]
       altered_note_sequence = [n for n in altered_bar.note_sequences if n.track_num == track_num][0]

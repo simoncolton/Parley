@@ -13,7 +13,6 @@ class MTGListeningModelAnalyser:
       performance_spec = self.analysis_spec.get_value("performance_spec")
       soundfont_filepath = self.analysis_spec.get_value("soundfont_filepath")
       fluidsynth_cli = self.analysis_spec.get_value("fluidsynth_cli")
-      output_stem = self.analysis_spec.get_value("output_stem")
       MTGListeningModelUtils.add_bar_activations(composition, performance_spec, soundfont_filepath, fluidsynth_cli)
       self.add_local_tags(composition)
       self.add_global_tags(composition)
@@ -50,10 +49,10 @@ class MTGListeningModelAnalyser:
       if num_bars_to_highlight > 0:
         possible_bars_for_highlight = []
         for std_more in [4, 3.5, 3, 2.5, 2, 1.5, 1]:
-          for ind, tag in enumerate(all_activation_tags):
+          for ind, tag in enumerate(MTGListeningModelUtils.all_activation_tags):
             if "moodtheme" in tag:
               for bar in composition.bars:
-                if bar.mtg_activations_hash[tag] >= mtg_distribution[tag].mean + (std_more * mtg_distribution[tag].std):
+                if bar.mtg_activations_hash[tag] >= MTGListeningModelUtils.mtg_distribution[tag].mean + (std_more * MTGListeningModelUtils.mtg_distribution[tag].std):
                   short_tag = tag.split("__")[1]
                   if short_tag not in bar.mtg_activation_highlights:
                     bar.mtg_activation_highlights.append(short_tag)

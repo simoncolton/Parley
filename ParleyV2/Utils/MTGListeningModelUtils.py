@@ -18,15 +18,23 @@ class MTGListeningModelUtils:
               "inspiring": "mtg_jamendo_moodtheme__inspiring",
               "upbeat": "mtg_jamendo_moodtheme__upbeat"}
 
+  def initialise(embeddings_model, models_hash, tags_hash, positive_class_pos_hash, all_activation_tags, mtg_distribution):
+    MTGListeningModelUtils.embeddings_model = embeddings_model
+    MTGListeningModelUtils.models_hash = models_hash
+    MTGListeningModelUtils.tags_hash = tags_hash
+    MTGListeningModelUtils.positive_class_pos_hash = positive_class_pos_hash
+    MTGListeningModelUtils.all_activation_tags = all_activation_tags
+    MTGListeningModelUtils.mtg_distribution = mtg_distribution
+
   def get_wavfile_duration(wav_filepath):
     sample_rate, data = wavfile.read(wav_filepath)
     len_data = len(data)
     return len_data/sample_rate
 
   def get_embeddings(wav_filepath):
-    sampleRate = int(79520/2) # 79520 gets five samples per bar (roughly)
+    sampleRate = int(79520/2) # 79520 gets five samples per bar (roughly)
     audio = MonoLoader(filename=wav_filepath, sampleRate=sampleRate)()
-    return embeddings_model(audio)
+    return MTGListeningModelUtils.embeddings_model(audio)
 
   def get_activations(wav_filepath):
     duration = MTGListeningModelUtils.get_wavfile_duration(wav_filepath)
@@ -38,9 +46,8 @@ class MTGListeningModelUtils:
 
   def get_activations_from_embeddings(embeddings):
     activation_lists = [[] for i in range(0, len(embeddings))]
-    for model_id in models_hash:
-      st = time.time()
-      model_output = models_hash[model_id](embeddings)
+    for model_id in MTGListeningModelUtils.models_hash:
+      model_output = MTGListeningModelUtils.models_hash[model_id](embeddings)
       for ind, activation in enumerate(model_output):
         activation_lists[ind].extend(model_output[ind])
     return activation_lists
@@ -52,7 +59,6 @@ class MTGListeningModelUtils:
       wav_filepath = f"temp.wav"
       process = subprocess.Popen(f"{fluidsynth_cli} {soundfont_filepath} --quiet --no-shell {midi_filepath} -T wav -F {wav_filepath} > /dev/null", shell=True)
       process.wait()
-
       activations_list = MTGListeningModelUtils.get_activations(wav_filepath)
       wav_duration = MTGListeningModelUtils.get_wavfile_duration(wav_filepath)
       slice_ms = wav_duration/len(activations_list)
@@ -70,8 +76,8 @@ class MTGListeningModelUtils:
         ms += slice_ms
 
       for bar in composition.bars:
-        for tag in all_activation_tags:
-          tag_ind = all_activation_tags.index(tag)
+        for tag in MTGListeningModelUtils.all_activation_tags:
+          tag_ind = MTGListeningModelUtils.all_activation_tags.index(tag)
           vs_for_bar = [v[tag_ind] for v in bar.mtg_activation_vectors]
           if len(vs_for_bar) > 0:
             bar.mtg_activations_hash[tag] = np.mean(vs_for_bar)
