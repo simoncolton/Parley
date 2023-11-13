@@ -1,3 +1,7 @@
+from IPython.display import Audio
+from pdf2image import convert_from_path
+
+
 class ColabDisplayCommunicator:
 
     def __init__(self, edit_spec):
