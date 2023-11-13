@@ -1,5 +1,6 @@
 from IPython.display import Audio
 from pdf2image import convert_from_path
+import copy
 
 
 class ColabDisplayCommunicator:
