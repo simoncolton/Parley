@@ -3,14 +3,14 @@ from ParleyV2.Utils.ExtractionUtils import *
 
 class DynamicsUtils:
 
-    def update_directions(composition, gen_spec):
+    def update_directions(composition, dynamic_lead_track_num):
         prev_direction = None
         for bar in composition.bars:
             bar.directions = []
             if prev_direction is not None and bar.volume_direction == prev_direction:
                 bar.volume_direction = None
             prev_direction = bar.volume_direction if bar.volume_direction is not None else prev_direction
-        dynamic_lead_track_num = gen_spec.get_value("dynamic_lead_track_num")
+        #dynamic_lead_track_num = gen_spec.get_value("dynamic_lead_track_num")
         for episode_num in range(1, composition.num_episodes + 1):
             bars = ExtractionUtils.get_bars_for_episode_num(composition, episode_num)
             episode_start_vol = DynamicsUtils.get_av_note_volume(bars[0], dynamic_lead_track_num)

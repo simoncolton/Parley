@@ -1,4 +1,5 @@
 from ParleyV2.Specifications.SoundFontClasses import *
+from ParleyV2.Utils.ExtractionUtils import *
 
 
 class VolumeUtils:
@@ -27,6 +28,15 @@ class VolumeUtils:
             if note.pitch == 58 or note.pitch == 57 or note.pitch == 56:
                 return int(round(note.volume * 0.8))
         return note.volume
+
+    def homogenise_volumes(composition):
+        notes = ExtractionUtils.get_notes_in_composition(composition)
+        av_vol = int(round(sum([n.volume for n in notes])/len(notes)))
+        for note in notes:
+            note.volume = av_vol
+        for bar in composition.bars:
+            bar.volume_direction = None
+        composition.bars[0].volume_direction = VolumeUtils.get_vol_direction(av_vol)
 
 """
     def update_volumes(composition, episode, note_gen_spec):

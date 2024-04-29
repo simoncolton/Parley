@@ -17,7 +17,7 @@ class Etude:
     def get_composition_gen_spec(self):
 
         random_seed = random.randint(0, 100000)
-        #random_seed = 171717
+        #random_seed = 74826
 
         print("Random seed:", random_seed)
 
@@ -45,7 +45,7 @@ class Etude:
         #scaleA = MusicUtils.get_named_scale("c_major")
 
         # Fix scales for both episodes to be the same
-        #scaleB = scaleA
+        scaleB = scaleA
 
         home_chordA = random.choice(MusicUtils.get_chords_for_scale(scaleA, epA_chord_allowances, 70))
         home_chordB = random.choice(MusicUtils.get_chords_for_scale(scaleB, epB_chord_allowances, 70))
@@ -70,18 +70,19 @@ class Etude:
 
         discordancy_spec = ParameterisedSpecification(discordancy_spec_params)
 
-        sustain_factor_param = Parameter("sustain_factor")
-        sustain_factor_param.add_constrained_value(None, "efi=A,tn=0") # SGC 4
-        sustain_factor_param.add_constrained_value(None, "efi=A") # SGC 1.4
+        reverb_param = Parameter("reverb")
+        #        reverb_param.add_constrained_value(4, "efi=A,tn=0")
+        reverb_param.add_constrained_value(0.4, "efi=A")
+        reverb_param.add_constrained_value(0.6, "efi=B")
 
-        sustain_pedal_beats_param = Parameter("sustain_pedal_beats")
-        sustain_pedal_beats_param.add_constrained_value(None, "efi=A")
-        sustain_pedal_beats_param.add_constrained_value(None, "efi=B") # SGC 4
+        sustain_pedal_bars_param = Parameter("sustain_pedal_bars")
+        sustain_pedal_bars_param.add_constrained_value(0, "efi=A")
+        sustain_pedal_bars_param.add_constrained_value(1, "efi=B")
 
         performance_params = [
-            sustain_factor_param,
-            sustain_pedal_beats_param,
-            Parameter("end_sustain_pedal_beats", None) # SGC 4
+            reverb_param,
+            sustain_pedal_bars_param,
+            Parameter("sustain_pedal_reset", "episode")
         ]
 
         performance_spec = ParameterisedSpecification(performance_params)
@@ -104,8 +105,8 @@ class Etude:
         fixed_scale_param.add_constrained_value("epA_scale", "efi=A")
         fixed_scale_param.add_constrained_value("epB_scale", "efi=B")
 
-        output_stem = f"./Outputs/Etudes/etude_{random_seed}"
-        num_minutes = 11
+        output_stem = f"/Users/Simon/Dropbox/Code/PycharmProjects/Parley/Outputs/Etudes/etude_{random_seed}"
+        num_minutes = 3
 
         bar_start_duration_ms_param = Parameter("bar_start_duration_ms")
         bar_start_duration_ms_param.add_constrained_value(2000, "efi=A")
@@ -176,6 +177,22 @@ class Etude:
 
         lead_sheet_generator_spec = ParameterisedSpecification(lead_sheet_generator_params)
 
+        note_colours_hash = {
+            "harmony=added": "grey",
+            "likelihood=unchanged": "blue",
+            "likelihood=more likely": "green",
+            "likelihood=less likely": "purple",
+            "discordance=clang": "red",
+            "discordance=grind": "red",
+            "discordance=clang and grind": "red"
+        }
+
+        margin_colours_hash = {
+            "discordance": "yellow",
+            "likelihood": "blue",
+            "tuplet": "orange"
+        }
+
         total_exporter_params = [
             Parameter("applier_class_name", "TotalExporter"),
             Parameter("output_composition_id", None),
@@ -185,12 +202,23 @@ class Etude:
             Parameter("export_data", True),
             Parameter("output_stem", None),
             Parameter("score_parts", None),
+            Parameter("scale", scaleA),
             Parameter("show_chord_name", True),
             Parameter("show_episode_duration", True),
             Parameter("show_colours", True),
-            Parameter("musescore_command_line", "/Applications/MuseScore\ 3.app/Contents/MacOS/mscore"),
+            Parameter("note_colours_hash", note_colours_hash),
+            Parameter("margin_colours_hash", margin_colours_hash),
+            Parameter("fluidsynth_cli", "fluidsynth"),
+            Parameter("musescore_cli", "/Applications/MuseScore\ 3.app/Contents/MacOS/mscore"),
+            Parameter("resources_dir", "/Users/Simon/Dropbox/Code/Parley/ParleyV2/Resources"),
+            Parameter("ffmpeg_cli", "ffmpeg"),
             Parameter("soundfont_filepath", soundfont_filepath),
             Parameter("audio_formats", ["WAV", "MP3"]),
+            Parameter("codec", "libx264"),
+            Parameter("audio_formats", ["WAV", "MP3"]),
+            Parameter("video_fade_in", False),
+            Parameter("video_border_pixels", 2),
+            Parameter("video_border_colour", (200, 200, 200, 200)),
             Parameter("dpi", 100),
             Parameter("fps", 5),
             Parameter("end_rest_ms", 0), # SGC 3000

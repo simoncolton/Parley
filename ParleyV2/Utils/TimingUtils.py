@@ -218,3 +218,47 @@ class TimingUtils:
 
         return pedal_on_bars, pedal_off_bars
 
+    def assign_onset_64ths(notes):
+        duration_ticks = max([n.midi_timing.on_tick + n.midi_timing.duration_ticks for n in notes])
+        # Choose number of bars
+        min_num_bars = int(len(notes)/20)
+        max_num_bars = int(len(notes)/5)
+        tuples = [(TimingUtils.get_score_for_num_bars(notes, duration_ticks/num_bars), num_bars, duration_ticks/num_bars) for num_bars in range(min_num_bars, max_num_bars + 1)]
+        tuples.sort()
+        num_bars = tuples[-1][1]
+        bar_ticks = tuples[-1][2]
+        av_notes_per_bar = len(notes)/num_bars
+        ticks_per_64th = bar_ticks/64
+        for note in notes:
+            TimingUtils.quantise_note(note, bar_ticks, ticks_per_64th, 16)
+
+        for fraction in [8, 4]:
+            for ind1, note1 in enumerate(notes):
+                for ind2, note2 in enumerate(notes[ind1+ 1:]):
+                    if note1.bar_num == note2.bar_num and note1.timing.start64th == note2.timing.start64th:
+                        diff = abs(note1.midi_timing.on_tick - note2.midi_timing.on_tick)
+                        if diff > 100:
+                            TimingUtils.quantise_note(note1, bar_ticks, ticks_per_64th, fraction)
+                            TimingUtils.quantise_note(note2, bar_ticks, ticks_per_64th, fraction)
+        return num_bars, bar_ticks
+
+    def quantise_note(note, bar_ticks, ticks_per_64th, fraction):
+        note.bar_num = 1 + math.floor(note.midi_timing.on_tick / bar_ticks)
+        note_ticks_from_bar_start = note.midi_timing.on_tick % bar_ticks
+        note_64ths_from_bar_start = int(note_ticks_from_bar_start / ticks_per_64th)
+        note.timing = Timing()
+        note.timing.start64th = int(math.floor(note_64ths_from_bar_start / fraction)) * fraction
+
+    def get_score_for_num_bars(notes, bar_ticks):
+        ticks_per_64th = bar_ticks/64
+        total_score = 0
+        for note in notes:
+            note_ticks_from_bar_start = note.midi_timing.on_tick % bar_ticks
+            note_64ths_from_bar_start = int(note_ticks_from_bar_start/ticks_per_64th)
+            # quantise to quavers to get a score
+            quantised_note_64ths_from_bar_start = int(math.floor(note_64ths_from_bar_start / 8)) * 8
+            dist = note_64ths_from_bar_start - quantised_note_64ths_from_bar_start
+            dist = min(dist, 8 - dist)
+            score = 4 - dist
+            total_score += score
+        return total_score/len(notes)

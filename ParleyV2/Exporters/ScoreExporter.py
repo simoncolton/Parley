@@ -34,7 +34,9 @@ class ScoreExporter:
         XMLUtils.add_child(self.doc, work_elem, "work-title", {}, composition.title)
         identification_elem = XMLUtils.add_child(self.doc, self.root, "identification")
         date_string = DateUtils.get_todays_date_string()
-        XMLUtils.add_child(self.doc, identification_elem, "creator", {"type": "composer"}, f"Parley V2\n{date_string}\nSeed: {composition.random_seed}")
+        creator = "Parley V2" if self.export_spec.get_value("creator") == None else self.export_spec.get_value("creator")
+        seed_string = "" if composition.random_seed is None else f"{composition.random_seed}"
+        XMLUtils.add_child(self.doc, identification_elem, "creator", {"type": "composer"}, f"{creator}\n{date_string}\n{seed_string}")
         part_list_elem = XMLUtils.add_child(self.doc, self.root, "part-list")
         score_parts = self.export_spec.get_value("score_parts")
         for part_ind, score_part in enumerate(score_parts):
@@ -59,8 +61,11 @@ class ScoreExporter:
         for bar in composition.bars:
             is_start_of_episode = bar.episode_bar_num == 1
             episode_num = bar.episode_num
+            bpm = composition.bpm if bar_ind == 1 else None
+            musical_directive = composition.musical_directive if bar_ind == 1 else None
+            episode_string = None if not self.export_spec.get_value("show_episode_starts") else f"Episode {episode_num}"
             measure_elem = self.add_measure(composition, part_spec, part_ind, bar_ind, part_elem, bar, is_start_of_episode,
-                                            episode_num, f"Episode {episode_num}")
+                                            episode_num, episode_string, bpm, musical_directive)
             for staff_num, (clef, track_nums) in enumerate(part_spec["track_details"]):
                 if staff_num > 0:
                     backup_elem = XMLUtils.add_child(self.doc, measure_elem, "backup")
@@ -74,7 +79,7 @@ class ScoreExporter:
             bar_ind += 1
 
     def add_measure(self, composition, part_spec, part_ind, measure_ind, part_elem, bar,
-                    is_start_of_episode, episode_num, episode_title):
+                    is_start_of_episode, episode_num, episode_title, bpm, musical_directive):
         measure_attributes = {"number": f"{measure_ind}"}
         measure_elem = XMLUtils.add_child(self.doc, part_elem, "measure", measure_attributes)
 
@@ -99,7 +104,7 @@ class ScoreExporter:
 
         attributes_elem = XMLUtils.add_child(self.doc, measure_elem, "attributes")
         XMLUtils.add_child(self.doc, attributes_elem, "divisions", {}, "64")
-        if part_ind == 0 and is_start_of_episode:
+        if part_ind == 0 and is_start_of_episode and episode_title is not None:
             XMLUtils.add_child(self.doc, measure_elem, "bookmark", {"id": f"{episode_num + 1}"})
             direction_elem = XMLUtils.add_child(self.doc, measure_elem, "direction", {"placement": "above"})
             direction_type_elem = XMLUtils.add_child(self.doc, direction_elem, "direction-type")
@@ -107,8 +112,21 @@ class ScoreExporter:
             rehearsal_attrs = {"font-size": "8"}
             if self.export_spec.get_value("show_episode_duration"):
                 start_s = bar.start_tick / 960
-                ep_title += f" @ {start_s: .1f}s"
+                ep_title += f" @ {start_s:.1f}s"
             XMLUtils.add_child(self.doc, direction_type_elem, "rehearsal", rehearsal_attrs, ep_title)
+
+        if part_ind == 0 and is_start_of_episode and bpm is not None:
+            direction_elem = XMLUtils.add_child(self.doc, measure_elem, "direction", {"placement": "above"})
+            direction_type_elem = XMLUtils.add_child(self.doc, direction_elem, "direction-type")
+            metronome_attrs = {}
+            metronome_elem = XMLUtils.add_child(self.doc, direction_type_elem, "metronome", metronome_attrs)
+            XMLUtils.add_child(self.doc, metronome_elem, "beat-unit", {}, "quarter")
+            XMLUtils.add_child(self.doc, metronome_elem, "per-minute", {}, f"{bpm}")
+
+        if part_ind == 0 and is_start_of_episode and musical_directive is not None:
+            direction_elem = XMLUtils.add_child(self.doc, measure_elem, "direction", {"placement": "above", "halign": "left"})
+            direction_type_elem = XMLUtils.add_child(self.doc, direction_elem, "direction-type")
+            XMLUtils.add_child(self.doc, direction_type_elem, "words", {"xml_space": "Yes"}, musical_directive)
 
         if bar.volume_direction is not None:
             dynamics_direction_elem = XMLUtils.add_child(self.doc, measure_elem, "direction", {"placement": "below"})
@@ -125,14 +143,14 @@ class ScoreExporter:
             XMLUtils.add_child(self.doc, direction_type_elem, "words", {"xml_space": "Yes"}, bar_direction)
             XMLUtils.add_child(self.doc, direction_elem, "staff", {}, "1")
 
-        """
-        CAN'T GET PEDAL SIGNS TO BE PLACED BELOW THE STAVE!!!
-        pedal_direction_elem = XMLUtils.add_child(self.doc, measure_elem, "direction", {"placement": "below"})
-        direction_type_elem = XMLUtils.add_child(self.doc, pedal_direction_elem, "direction-type")
-        XMLUtils.add_child(self.doc, direction_type_elem, "pedal", {"type": "stop", "relative-y": "-90.00"})
-        XMLUtils.add_child(self.doc, pedal_direction_elem, "staff", {}, "2")
-        #XMLUtils.add_child(self.doc, pedal_direction_elem, "offset", {}, "-22")
-        """
+#        """
+#        CAN'T GET PEDAL SIGNS TO BE PLACED BELOW THE STAVE!!!
+#         pedal_direction_elem = XMLUtils.add_child(self.doc, measure_elem, "direction", {"placement": "below", "halign": "right"})
+#         direction_type_elem = XMLUtils.add_child(self.doc, pedal_direction_elem, "direction-type")
+#         XMLUtils.add_child(self.doc, direction_type_elem, "pedal", {"type": "stop"})
+#         XMLUtils.add_child(self.doc, pedal_direction_elem, "staff", {}, "2")
+#         #XMLUtils.add_child(self.doc, pedal_direction_elem, "offset", {}, "-22")
+#        """
 
         return measure_elem
 
@@ -149,7 +167,10 @@ class ScoreExporter:
                         if note.pitch is not None:
                             notes_for_beat.append(note)
                             for n in range(numerator, numerator + note.timing.duration64ths):
-                                has_notes[n] = True
+                                if n < len(has_notes):
+                                    has_notes[n] = True
+                                else:
+                                    print("BAD:", len(has_notes), n, note.timing.start64th + note.timing.duration64ths)
             starting_notes.append(notes_for_beat)
 
         for numerator in range(1, denominator + 1):
@@ -225,7 +246,6 @@ class ScoreExporter:
         if len(whole_letter) == 2:
             alter_offset = "-1" if self.uses_flats else "1"
             XMLUtils.add_child(self.doc, pitch_elem, "alter", {}, alter_offset)
-
         num_fracs, num_dots = RhythmUtils.get_note_quantization_split(note.timing.duration64ths)[0]
         note_type = self.note_types_hash[num_fracs]
         if note.timing.tuplet_duration64ths is not None:

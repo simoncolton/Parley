@@ -6,6 +6,7 @@ class Timing:
     start64th: int = None
     duration64ths: int = None
     tuplet_duration64ths: int = None
+    normal_notes: int = None
     tuplet_length: int = None
     tuplet_note_type: str = None
     tuplet_note_duration64ths: int = None
@@ -41,6 +42,8 @@ class Composition:
     chords_hash: {} = None
     track_notes_hash: {} = None
     episode_track_notes_hash: {} = None
+    bpm: int = None
+    musical_directive: str = None
 
 
 @dataclass
@@ -60,7 +63,7 @@ class Bar:
     duration_ticks: int = None
     num_beats: int = None
     tick_timings: [] = None
-    directions: str = None
+    # directions: str = None # check whether this is needed
     chord_nums: [] = None
     note_sequences: [] = None
     episode_num: int = None

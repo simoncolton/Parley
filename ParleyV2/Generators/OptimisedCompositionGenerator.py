@@ -19,7 +19,8 @@ class OptimisedCompositionGenerator:
         best_composition_distance = 100000000
         for trial_num in range(0, num_trials):
             if not termination_achieved:
-                previous_composition = Composition(title=self.gen_spec.get_value("title"), subtitle=self.gen_spec.get_value("subtitle"))
+                previous_composition = Composition(title=self.gen_spec.get_value("title"),
+                                                   subtitle=self.gen_spec.get_value("subtitle"))
                 previous_composition.random_seed = seed
                 continue_generation = True
                 for spec in self.gen_spec.get_value("specs_to_apply"):

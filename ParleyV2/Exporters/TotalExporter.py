@@ -19,6 +19,6 @@ class TotalExporter:
             composition = ParameterisedSpecification(params_list, {"applier_class_name": "DataExporter"}).apply(composition)
         if self.export_spec.get_value("export_video"):
             composition = ParameterisedSpecification(params_list, {"applier_class_name": "VideoExporter"}).apply(composition)
-        if self.export_spec.get_value("export_bars_wav_zip"):
-            composition = ParameterisedSpecification(params_list, {"applier_class_name": "BarAudioExporter"}).apply(composition)
+        #if self.export_spec.get_value("export_bars_wav_zip"):
+        #    composition = ParameterisedSpecification(params_list, {"applier_class_name": "BarAudioExporter"}).apply(composition)
         return composition

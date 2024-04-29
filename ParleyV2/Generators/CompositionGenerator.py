@@ -14,7 +14,8 @@ class CompositionGenerator:
         seed = self.gen_spec.get_value("random_seed")
         previous_composition = Composition(title=self.gen_spec.get_value("title"),
                                            subtitle=self.gen_spec.get_value("subtitle"),
-                                           track_notes_hash={}, episode_track_notes_hash={})
+                                           track_notes_hash={}, episode_track_notes_hash={},
+                                           bpm=None)
         previous_composition.random_seed = seed
         for spec in self.gen_spec.get_value("specs_to_apply"):
             #random.seed(seed)
@@ -39,4 +40,4 @@ class CompositionGenerator:
                 composition.episode_track_notes_hash[(track_num, episode_num)] = ep_track_notes
                 for ind, note in enumerate(ep_track_notes):
                     note.episode_track_note_num = ind
-        DynamicsUtils.update_directions(composition, self.gen_spec)
+        DynamicsUtils.update_directions(composition, self.gen_spec.get_value("dynamic_lead_track_num"))

@@ -19,9 +19,10 @@ class DataExporter:
         episodes_elem = XMLUtils.add_child(self.doc, root, "episodes")
         for key in composition.episodes_hash:
             XMLUtils.add_child(self.doc, episodes_elem, "episode", self.get_attributes(composition.episodes_hash[key]))
-        chords_elem = XMLUtils.add_child(self.doc, root, "chords")
-        for key in composition.chords_hash.keys():
-            XMLUtils.add_child(self.doc, chords_elem, "chord", self.get_attributes(composition.chords_hash[key]))
+        if composition.chords_hash is not None:
+            chords_elem = XMLUtils.add_child(self.doc, root, "chords")
+            for key in composition.chords_hash.keys():
+                XMLUtils.add_child(self.doc, chords_elem, "chord", self.get_attributes(composition.chords_hash[key]))
         self.add_xml(root, composition)
         doc_string = XMLUtils.prettify(self.doc)
         xml_filepath = f"{output_stem}.xml"
@@ -46,8 +47,27 @@ class DataExporter:
                     attributes_dict[key] = "None"
                 elif isinstance(val, dict):
                     if "start64th" in val.keys():
-                        attributes_dict[key] = "timing:" + str(val["start64th"]) + "," + str(val["duration64ths"])
+                        attributes_dict[key] = self.get_timing_string(val)
+                    if "on_tick" in val.keys():
+                        attributes_dict[key] = self.get_midi_timing_string(val)
         return attributes_dict
+
+    def get_timing_string(self, val):
+        s = "timing:"
+        s += str(val["start64th"])
+        s += "," + str(val["duration64ths"])
+        s += "," + str(val["tuplet_duration64ths"])
+        s += "," + str(val["normal_notes"])
+        s += "," + str(val["tuplet_length"])
+        s += "," + str(val["tuplet_note_type"])
+        s += "," + str(val["tuplet_note_duration64ths"])
+        return s
+
+    def get_midi_timing_string(self, val):
+        s = "midi_timing:" + str(val["on_tick"])
+        s += "," + str(val["duration_ticks"])
+        s += "," + str(val["off_tick"])
+        return s
 
     def add_xml(self, element, artefact):
         if dataclasses.is_dataclass(artefact) or isinstance(artefact, dict):

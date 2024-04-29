@@ -33,7 +33,8 @@ class MidiUtils:
 
     def get_midi_file(composition, performance_spec, soundfont_filepath, bar_nums=None):
         midi_file = MidiFile(type=1)
-        TimingUtils.add_midi_timings(composition, performance_spec)
+        if performance_spec.get_value("add_midi_timings") == True:
+            TimingUtils.add_midi_timings(composition, performance_spec)
         track_nums = ExtractionUtils.get_track_nums(composition)
         for track_num in track_nums:
             MidiUtils.add_track(track_num, composition, midi_file, soundfont_filepath, bar_nums)

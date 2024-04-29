@@ -221,7 +221,6 @@ class MusicUtils:
             dist += 1
         return pitch
 
-
     def get_named_scale(scale_name):
         scale = Scale()
         scale.tonic_letter = scale_name.split("_")[0]
@@ -333,8 +332,23 @@ class MusicUtils:
         base_ind = pitches_in_scale.index(base_pitch)
         return pitches_in_scale[base_ind + scale_interval]
 
+    def get_closest_majmin_key_sig_for_scale(scale):
+        major_key_sigs_hash = {
+            "c": 0, "g": 1, "d": 2, "a": 3, "e": 4, "b": 5, "f♯": 6, "c♯": 7,
+            "f": -1, "b♭": -2, "e♭": -3, "a♭": -4, "d♭": -5, "g♭": -6, "c♭": -7
+        }
+        minor_key_sigs_hash = {
+            "a": 0, "e": 1, "b": 2, "f♯": 3, "c♯": 4, "g♯": 5, "d♯": 6, "a♯": 7,
+            "d": -1, "g": -2, "c": -3, "f": -4, "b♭": -5, "e♭": -6, "a♭": -7
+        }
+        if scale.scale_type == "major":
+            return major_key_sigs_hash[scale.tonic_letter] if scale.tonic_letter in major_key_sigs_hash else None
+        else:
+            return minor_key_sigs_hash[scale.tonic_letter] if scale.tonic_letter in minor_key_sigs_hash else None
+
     def get_closest_key_sig_for_scale(scale):
-        key_sig_hash = {0: []}
+        if scale.scale_type == "major" or scale.scale_type == "minor":
+            return MusicUtils.get_closest_majmin_key_sig_for_scale(scale)
         sharps = [6, 1, 8, 3, 10, 5, 0]
         flats = [10, 3, 8, 1, 6, 11, 4]
         sharp_pos = 0
@@ -348,3 +362,55 @@ class MusicUtils:
         elif "♭" in scale.tonic_letter:
             return -flat_pos
         return sharp_pos if sharp_pos > flat_pos else -flat_pos
+
+    # For more advanced approach, see:
+    # https://github.com/jackmcarthur/musical-key-finder/blob/master/keyfinder.py
+
+    def get_closest_scale_for_notes(notes, must_be_majmin):
+        pairs = []
+        scale_types = ["major", "minor"] if must_be_majmin else Constants.scales_hash.keys()
+        for tonic in Constants.sharp_note_letters + Constants.flat_note_letters:
+            for scale_type in scale_types:
+                scale = MusicUtils.get_named_scale(f"{tonic}_{scale_type}")
+                score = len([n for n in notes if n.pitch in MusicUtils.get_pitches_in_scale(scale)])
+                pairs.append([score, scale])
+        pairs.sort(key=lambda x: x[0], reverse=True)
+        best_scales = [p[1] for p in pairs if p[0] == pairs[0][0]]
+        pairs = [[MusicUtils.get_num_tonic_occurences(notes, bs), bs] for bs in best_scales]
+        pairs.sort(key=lambda x: x[0], reverse=True)
+
+        sharps = [6, 1, 8, 3, 10, 5, 0]
+        flats = [10, 3, 8, 1, 6, 11, 4]
+
+        top_pairs = [p for p in pairs if p[0] == pairs[0][0]]
+        if not must_be_majmin:
+            return random.choice(top_pairs)[1]
+
+        new_pairs = []
+        for p in top_pairs:
+            scale = p[1]
+            if "♯" in scale.tonic_letter:
+                notinds = [i for i in range(0, len(sharps)) if sharps[i] not in scale.pitch_classes]
+                depth = notinds[0] if len(notinds) > 0 else len(sharps)
+            elif "♭" in scale.tonic_letter:
+                notinds = [i for i in range(0, len(flats)) if flats[i] not in scale.pitch_classes]
+                depth = notinds[0] if len(notinds) > 0 else len(flats)
+            else:
+                notinds1 = [i for i in range(0, len(sharps)) if sharps[i] not in scale.pitch_classes]
+                depth1 = notinds1[0] if len(notinds1) > 0 else len(sharps)
+                notinds2 = [i for i in range(0, len(sharps)) if flats[i] not in scale.pitch_classes]
+                depth2 = notinds2[0] if len(notinds2) > 0 else len(flats)
+                depth = max(depth1, depth2)
+
+            new_pairs.append([depth, scale])
+        new_pairs.sort(key=lambda x: x[0])
+        return new_pairs[-1][1]
+
+
+    def get_num_tonic_occurences(notes, scale):
+        if scale.tonic_letter in Constants.sharp_note_letters:
+            pos = Constants.sharp_note_letters.index(scale.tonic_letter)
+        elif scale.tonic_letter in Constants.flat_note_letters:
+            pos = Constants.flat_note_letters.index(scale.tonic_letter)
+        num = len([n for n in notes if n.pitch % 12 == pos])
+        return num

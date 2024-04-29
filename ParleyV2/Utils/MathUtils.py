@@ -46,4 +46,13 @@ class MathUtils:
         return ((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2))
 
     def highest_power_of_2_dividing(n):
-        return n & (~(n - 1))
+        answer = 0
+        while 2 ** answer < n:
+            answer += 1
+        return answer - 1
+
+    def closest_power_of_2_dividing(n):
+        highest = MathUtils.highest_power_of_2_dividing(n)
+        dist1 = n - (2 ** highest)
+        dist2 = (2 ** (highest + 1)) - n
+        return highest if dist2 > dist1 else highest + 1

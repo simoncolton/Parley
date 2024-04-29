@@ -1,6 +1,7 @@
 import copy
 from ParleyV2.Utils.XMLUtils import *
 from ParleyV2.Artefacts.Artefacts import *
+from ParleyV2.Utils.ExtractionUtils import *
 
 
 class LoadCompositionGenerator:
@@ -25,6 +26,11 @@ class LoadCompositionGenerator:
             self.add_chord(composition, chord_elem)
         for bar_elem in doc.getElementsByTagName("bar"):
             self.add_bar(composition, bar_elem)
+        for note in ExtractionUtils.get_notes_in_composition(composition):
+            note.tags = {}
+        for bar in composition.bars:
+            if bar.margin_comments == []:
+                bar.margin_comments = None
         return composition
 
     def add_episode(self, composition, episode_elem):
@@ -86,10 +92,28 @@ class LoadCompositionGenerator:
             return bool(str_val)
         if "list:" in str_val:
             l = []
-            for v in str_val.split(":")[1].split(","):
-                l.append(self.get_typed_value(v))
+            rhs = str_val.split(":")[1]
+            if rhs != "":
+                for v in rhs.split(","):
+                    l.append(self.get_typed_value(v))
             return l
-        if "timing:" in str_val:
-            pair = str_val.split(":")[1].split(",")
-            return Timing(start64th=int(pair[0]), duration64ths=int(pair[1]))
+        if "timing:" in str_val and "midi_timing:" not in str_val:
+            parts = str_val.split(":")[1].split(",")
+            t = Timing(start64th=int(parts[0]), duration64ths=int(parts[1]))
+            if parts[2] != "None":
+                t.tuplet_duration64ths = int(parts[2])
+            if parts[3] != "None":
+                t.normal_notes = int(parts[3])
+            if parts[4] != "None":
+                t.tuplet_length = int(parts[4])
+            if parts[5] != "None":
+                t.tuplet_note_type = parts[5]
+            if parts[6] != "None":
+                t.tuplet_note_duration64ths = int(parts[6])
+            return t
+
+        if "midi_timing:" in str_val:
+            parts = str_val.split(":")[1].split(",")
+            mt = MidiTiming(int(parts[0]), int(parts[1]), int(parts[2]))
+            return mt
         return str_val

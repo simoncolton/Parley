@@ -25,7 +25,7 @@ class VideoExporter:
         fps = self.export_spec.get_value("fps")
         ffmpeg_cli = self.export_spec.get_value("ffmpeg_cli")
         codec = self.export_spec.get_value("codec")
-        pipe = VideoUtils.get_ffmpeg_pipe(fps, ffmpeg_cli, temp_mp4_output_file_path, codec)
+        pipe = VideoUtils.get_ffmpeg_pipe(fps, ffmpeg_cli, temp_mp4_output_file_path)
         pdf_file_path = output_stem + ".pdf"
         bar_boxes = PDFUtils.get_bar_bounding_boxes(pdf_file_path)
         score_images = convert_from_path(pdf_file_path, dpi=self.export_spec.get_value("dpi"))
