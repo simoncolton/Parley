@@ -663,7 +663,7 @@ get_aria_tokenisation()
 """
 
 # THESE WORK
-original_composition = make_score("large_pt_None_68", "lacrimoso", 17, "original", 0, False)
+#original_composition = make_score("large_pt_None_68", "lacrimoso", 17, "original", 0, False)
 #make_score("small_pt_classical_37", "upbeat", 117, "original", 1)
 #make_score("medium_ft_classical_56", "quick", 20000, "original", 0.25)
 #edited_composition = make_score("large_pt_None_68_edited", "lacrimoso", 17, "original", 0, analyse_expression=False)
@@ -692,7 +692,23 @@ def load_pianita():
             Parameter("file_path", pianita_dir + "/pianita_17.xml")
         ]
     load_spec = ParameterisedSpecification(load_params)
-    composition = load_spec.apply()
+    return load_spec.apply()
+
+def get_excerpt(composition, start_bar_num, end_bar_num):
+    extract_params = [
+        Parameter("applier_class_name", "ExcerptExtractor"),
+        Parameter("start_bar_num", start_bar_num),
+        Parameter("end_bar_num", end_bar_num)
+    ]
+    extract_spec = ParameterisedSpecification(extract_params)
+    return extract_spec.apply(composition)
+
+def export(composition):
+
+    score_parts = [{"part_id": "Piano", "part_name": "Piano",
+                    "track_details": [("treble", [1, 6, 7, 8, 9]), ("bass", [0, 2, 3, 4, 5])]}]
+
+    soundfont_filepath = SFYamahaPiano.soundfont_filepath
 
     reverb_param = Parameter("reverb")
     reverb_param.add_constrained_value(1.2, "efi=A")
@@ -708,40 +724,26 @@ def load_pianita():
     ]
 
     performance_spec = ParameterisedSpecification(performance_params)
-    soundfont_filepath = SFYamahaPiano.soundfont_filepath
 
-    mp3_export_params = [
-                Parameter("applier_class_name", "AudioExporter"),
-                Parameter("output_stem", pianita_dir + "/temp"),
-                Parameter("audio_formats", ["MP3"]),
-                Parameter("soundfont_filepath", soundfont_filepath),
-                Parameter("fluidsynth_cli", "fluidsynth"),
-                Parameter("end_rest_ms", 3000),
-                Parameter("performance_spec", performance_spec)
-    ]
-
-    mp3_export_spec = ParameterisedSpecification(mp3_export_params)
-   # mp3_export_spec.apply(composition)
-
-    score_parts = [{"part_id": "Piano", "part_name": "Piano",
-                    "track_details": [("treble", [1, 6, 7, 8, 9]), ("bass", [0, 2, 3, 4, 5])]}]
+    note_colours_hash = {}
 
     total_exporter_params = [
         Parameter("applier_class_name", "TotalExporter"),
-        Parameter("output_stem", pianita_dir + "/temp"),
+        Parameter("output_stem",
+                  f"/Users/Simon/Dropbox/Code/PycharmProjects/Parley/Outputs/AriaScores/delme"),
         Parameter("output_composition_id", None),
         Parameter("composition_title", f"Pianita No. 17"),
         Parameter("creator", "Aria"),
-        Parameter("export_score", True),
+        Parameter("export_score", False),
         Parameter("export_audio", True),
-        Parameter("export_video", True),
+        Parameter("export_video", False),
         Parameter("export_data", True),
         Parameter("score_parts", score_parts),
         Parameter("scale", MusicUtils.get_named_scale("d_minor")),
         Parameter("show_chord_name", False),
         Parameter("show_episode_duration", False),
         Parameter("show_colours", True),
-        Parameter("note_colours_hash", {}),
+        Parameter("note_colours_hash", note_colours_hash),
         Parameter("margin_colours_hash", None),
         Parameter("soundfont_filepath", soundfont_filepath),
         Parameter("fluidsynth_cli", "fluidsynth"),
@@ -755,30 +757,14 @@ def load_pianita():
         Parameter("video_border_colour", (200, 200, 200, 200)),
         Parameter("dpi", 200),
         Parameter("fps", 5),
-        Parameter("end_rest_ms", 3000),
+        Parameter("end_rest_ms", 0),
         Parameter("performance_spec", performance_spec)
     ]
     exporter_spec = ParameterisedSpecification(total_exporter_params)
-    exporter = TotalExporter(exporter_spec)
-    exporter.apply(composition)
-    return composition
+    exporter_spec.apply(composition)
 
-copy_composition = load_pianita()
 
-o_notes = ExtractionUtils.get_notes_in_composition(original_composition)
-c_notes = ExtractionUtils.get_notes_in_composition(copy_composition)
-
-o_bars = ExtractionUtils.get_bars_for_episode_num(original_composition, 1)
-c_bars = ExtractionUtils.get_bars_for_episode_num(copy_composition, 1)
-
-for ind, o_n in enumerate(o_notes):
-    c_n = c_notes[ind]
-    if o_n.midi_timing != c_n.midi_timing:
-        print(ind, o_n.pitch, c_n.pitch)
-
-for ind, o_bar in enumerate(o_bars):
-    c_bar = c_bars[ind]
-    if o_bar != c_bar:
-        print(o_bar)
-        print(c_bar)
+pianita = load_pianita()
+excerpt = get_excerpt(pianita, 9, 10)
+export(excerpt)
 

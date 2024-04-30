@@ -262,3 +262,7 @@ class TimingUtils:
             score = 4 - dist
             total_score += score
         return total_score/len(notes)
+
+    def get_first_on_tick(composition):
+        notes = ExtractionUtils.get_notes_in_composition(composition)
+        return min([n.midi_timing.on_tick for n in notes])
